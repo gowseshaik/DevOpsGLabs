@@ -1,3 +1,6 @@
+https://podman.io/getting-started
+
+
 Finding Images:
 ===============
 Command	Description
@@ -148,3 +151,67 @@ Username: myusername
 Password:
 Used: /run/user/1000/containers/auth.json
 Login Succeeded!
+
+
+==============================
+nspecting a running container
+You can “inspect” a running container for metadata and details about itself. podman inspect will provide lots of useful information like environment variables, network settings or allocated resources.
+
+Since, the container is running in rootless mode, no IP Address is assigned to the container.
+
+$ podman inspect -l | grep IPAddress
+            "IPAddress": "",
+Note: The -l is a convenience argument for latest container. You can also use the container’s ID or name instead of -l or the long argument --latest.
+============
+Running a container
+This sample container will run a very basic httpd server that serves only its index page.
+
+$ podman run -dt -p 8080:80/tcp docker.io/library/httpd
+
+============
+Viewing the container’s logs
+You can view the container’s logs with Podman as well:
+
+$ podman logs -l
+===========
+Viewing the container’s pids
+You can observe the httpd pid in the container with podman top.
+
+$ podman top -l
+=========
+You may stop the container:
+
+$ podman stop -l
+==========
+Finally, you can remove the container:
+
+$ podman rm -l
+====================
+Checkpointing the container:
+Checkpointing a container stops the container while writing the state of all processes in the container to disk. With this a container can later be restored and continue running at exactly the same point in time as the checkpoint. This capability requires CRIU 3.11 or later installed on the system.
+
+To checkpoint the container use:
+
+$ sudo podman container checkpoint <container_id>
+========================
+Restoring the container:
+Restoring a container is only possible from a previously checkpointed container. The restored container will continue to run at exactly the same point in time it was checkpointed.
+
+To restore the container use:
+
+$ sudo podman container restore <container_id>
+
+============
+Migrating the container:
+To live migrate a container from one host to another the container is checkpointed on the source system of the migration, transferred to the destination system and then restored on the destination system. When transferring the checkpoint, it is possible to specify an output-file.
+
+On the source system:
+
+$ sudo podman container checkpoint <container_id> -e /tmp/checkpoint.tar.gz
+$ scp /tmp/checkpoint.tar.gz <destination_system>:/tmp
+On the destination system:
+
+$ sudo podman container restore -i /tmp/checkpoint.tar.gz
+
+====================
+
