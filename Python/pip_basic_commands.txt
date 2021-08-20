@@ -1,0 +1,67 @@
+ython: How To Use Pip – Basic Commands
+Posted on November 5, 2018by admin
+What is Pip? pip is a tool for installing and managing Python packages.
+
+With pip command you can install, list, upgrade (update), downgrade and uninstall Python packages.
+
+In this post i am showing how to use pip from the command line by giving examples of the basic pip commands.
+
+Cool Tip: How to install pip on Ubuntu, CentOS or MacOS! Read More →
+
+Pip List
+List installed packages:
+To check list of your package
+=============================
+pip list
+
+
+$ pip freeze
+Show version of the particular package:
+
+$ pip freeze | grep <PACKAGE>
+Search for a package:
+
+$ pip search "<PACKAGE>"
+List all available versions of a package:
+
+$ pip install <PACKAGE>==
+Pip Install
+Install the latest version of a package:
+
+$ pip install <PACKAGE>
+Install the specific version of a package:
+
+$ pip install <PACKAGE>==<VERSION>
+Install packages from requirements.txt file:
+
+$ pip install -r requirements.txt
+Install local package:
+
+$ pip install <DIRECTORY>
+Install local package in editable mode:
+
+$ pip install -e <DIRECTORY>
+Setup.py: The <DIRECTORY> must have a setup.py file in it.
+
+Pip Upgrade
+Upgrade a package to the latest version:
+
+$ pip install --upgrade <PACKAGE>
+Upgrade/downgrade a package to the specific version:
+
+$ pip install --upgrade <PACKAGE>==<VERSION>
+Upgrade pip itself:
+
+$ pip install --upgrade pip
+Upgrade/downgrade pip itself to the specific version:
+
+$ pip install --upgrade pip==<VERSION>
+Cool Tip: Create isolated Python environments using virtualenv! Read More →
+
+Pip Uninstall
+Uninstall a package:
+
+$ pip uninstall <PACKAGE>
+Uninstall all packages:
+
+$ pip freeze | xargs pip uninstall -y

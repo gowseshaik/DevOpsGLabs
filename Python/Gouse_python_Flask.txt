@@ -1,0 +1,246 @@
+installing pip:
+==============
+sudo apt-get update
+sudo apt-get install python-pip
+
+installing Flask:
+=================
+pip install –-user flask
+
+bootstrap documentation:
+========================
+https://getbootstrap.com/docs/4.3/components/navs/
+
+writing our first code "my_app.py" for flask:
+==============================================
+from flask import Flask
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+        return "Hello, World!"
+if __name__ == '__main__':
+app.run(port=5000, debug=True)
+
+Run your code:
+=============
+python my_app.py
+
+now navigate to localhost:5000
+
+
+RSS news feeder for headlines:
+==============================
+cd headlines
+git init
+git remote add origin <your headlines git URL>
+
+Tell git who you are, to allow it to automatically add metadata to your code
+changes, as follows:
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+Git allows you full control over which files are part of your repository and which
+aren't. Even though we initialized the Git repo in our firstapp directory, our repo
+currently contains no files. Add our application to the repo, commit, and then push
+it, as follows:
+git add hello.py
+git commit -m "Initial commit"
+git push -u origin master
+
+key installation:
+===================
+ssh user@123.456.789.000
+Alternatively, if you set it up with a public-private key authentication, where
+yourkey.pem is the full path to your private key file, here's the command to run: $ssh user@123.456.78.000 –i yourkey.pem
+
+Here, user is the default user on the VPS, and yourkey is the name of your private key file.
+
+To install our web server, Apache, and WSGI(Web Server Gateway Interface):
+==========================================================================
+we will run the following:
+sudo apt-get install apache2
+sudo apt-get install libapache2-mod-wsgi
+
+
+rss feeder:
+===========
+
+There are several Python libraries that we could use to achieve this. We'll select
+feedparser . To install it, open your terminal and type the following:
+pip install --user feedparser
+
+for an example of rss feed, lets take bbci
+http://feeds.bbci.co.uk/news/rss.xml
+
+now create an rss feeding app:
+==============================
+headlines.py
+
+Flask
+
+app = Flask(__name__)
+BBC_FEED = "http://feeds.bbci.co.uk/news/rss.xml"
+
+
+@app.route("/")
+def get_news():
+    feed = feedparser.parse(BBC_FEED)
+    first_article = feed['entries'][0]
+    return """<html>
+    <body>
+    <h1> BBC Headlines </h1>
+    <b>{0}</b> <br/>
+    <i>{1}</i> <br/>
+    <p>{2}</p> <br/>
+    </body>
+</html>""".format(first_article.get("title"), first_article.
+                  get("published"), first_article.get("summary"))
+
+
+if __name__ == "__main__":
+    app.run(port=5000, debug=True)
+
+
+execute: python headlines.py
+
+now add some more rss feeds from other sites.
+CNN: http://rss.cnn.com/rss/edition.rss
+Fox News: http://feeds.foxnews.com/foxnews/latest
+IOL: http://www.iol.co.za/cmlink/1.640
+
+import feedparser
+from flask import Flask
+[ 23 ]Getting Started with Our Headlines Project
+app = Flask(__name__)
+RSS_FEEDS = {'bbc':
+'cnn':
+'fox':
+'iol':
+'http://feeds.bbci.co.uk/news/rss.xml',
+'http://rss.cnn.com/rss/edition.rss',
+'http://feeds.foxnews.com/foxnews/latest',
+'http://www.iol.co.za/cmlink/1.640'}
+@app.route("/")
+@app.route("/bbc")
+def bbc():
+return get_news('bbc')
+@app.route("/cnn")
+def cnn():
+return get_news('cnn')
+def get_news(publication):
+feed = feedparser.parse(RSS_FEEDS[publication])
+first_article = feed['entries'][0]
+return """<html>
+<body>
+<h1>Headlines </h1>
+<b>{0}</b> </ br>
+<i>{1}</i> </ br>
+<p>{2}</p> </ br>
+</body>
+</html>""".format(first_article.get("title"), first_article.
+get("published"), first_article.get("summary"))
+if __name__ == "__main__":
+app.run(port=5000, debug=True)
+
+==============
+flask coding: https://www.youtube.com/watch?v=8aTgOs_cv2g
+
+first_name="Gouse"
+stuff="chips"
+return render_template("index.html", content="Testing", first_name=first_name, stuff=stuff)
+
+
+{{ content }}
+{{ var }}
+{% logic %}
+{% endlogic %}
+
+=============
+vi new.html
+{% extends index.html %}
+{% block content %}
+
+<link href="{{ url_for('static', filename='css/bootstrap.main.css') }}" rel="stylestheet">
+
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" >
+<br/>
+<center>
+<h1>404 Error</h1>
+<p> Page Not Found - Try Again...</p>
+</center>
+{% endblock %}
+
+save the new.html
+===============
+
+<!doctype html>
+<title>Jinja2 demo</title>
+{% if status %}
+  <p>LED is ON</p>
+{% else %}
+  <p>LED is OFF</>
+{% endif %}
+
+# for item in seq
+    <li>{{ item }}</li>
+# endfor
+</ul>
+<ul>
+{% for item in seq %}
+    <li>{{ item }}</li>
+{% endfor %}
+</ul>
+
+vi index.html : https://www.youtube.com/watch?v=y62Dvo2Ml7o
+===============
+ABOVE<br/><br/>
+<body>
+
+{% include 'navbar.html %}
+
+<br/>
+{% block contect %}
+	<h1> Hello index of {{user_name|lower }}</h1>
+{% endblock %}
+
+<br/><br/>
+</body>
+BELOW
+
+
+vi new.html
+=============
+{% extends index.html %}
+	
+{% block contect %}
+	<h1> Hello new.html of {{user_name|lower }}</h1>
+{% endblock %}
+
+
+
+Call your python code from link:
+================================
+<li class="nav-item">
+<a class="nav-link" href="{{url_for('user', name='Gouse')}}">User Profile</a>
+</li>
+
+
+=================
+set your environement variables for your development environment
+
+    $ export FLASK_APP=hello.py
+    $ export FLASK_ENV=development
+    $ flask run
+
+Options:
+  --version  Show the flask version
+  --help     Show this message and exit.
+
+Commands:
+  routes  Show the routes for the app.
+  run     Run a development server.
+  shell   Run a shell in the app context.
+========
+
+
+

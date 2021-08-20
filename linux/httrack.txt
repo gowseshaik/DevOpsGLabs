@@ -1,0 +1,13 @@
+1. sudo apt-get update
+2. sudo apt install httrack
+3. httrack "http://imdb.com"
+
+When you downloaded and installed httrack ,place it in the
+
+/user/bin
+
+directory, so it should be accessible from any directory in kali as /user/bin is in the path variable
+
+Lets type on the command line
+
+httrack --help

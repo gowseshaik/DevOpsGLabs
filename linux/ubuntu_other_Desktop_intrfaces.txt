@@ -1,0 +1,24 @@
+Don’t like the default interface for Ubuntu? You can simply change it. You have many different possibilities: MATE, GNOME, KDE, XFCE, LXDE, LXQt, Budgie, Cinnamon.
+
+Each interface has its own pros and cons. Just like tastes, everybody likes something different. You can check the look of each one of them to see which one is best for you.
+
+Warning: Don’t install them all! Installing desktop environments like KDE and GNOME together is probably not a good idea on Ubuntu. Just install the one you would use on daily basis and remove the others.
+
+To install Cinnamon:
+
+sudo apt install cinnamon-desktop-environment
+To install KDE(with Kubuntu branding):
+
+sudo apt kubuntu-desktop
+To install Xfce:
+
+sudo apt install xubuntu-desktop
+To install MATE:
+
+sudo apt install ubuntu-mate-desktop
+To install LXQt:
+
+sudo apt install lubuntu-desktop
+To install Budgie:
+
+sudo apt install ubuntu-budgie-desktop

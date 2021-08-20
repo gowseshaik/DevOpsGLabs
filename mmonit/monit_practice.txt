@@ -1,0 +1,6 @@
+curl -v http://admin:monit@localhost:2812
+
+if network tools not working
+sudo apt install net-tools
+
+

@@ -1,0 +1,15 @@
+to zip with 7zip tool:
+
+install 7zip tool in ubuntu:
+sudo apt install p7zip-full
+
+compress with 7zip command:
+7z -v1000m a 'DjangoFlix - Build a Netflix-Like Service in Django _ Python.7z' 'DjangoFlix - Build a Netflix-Like Service in Django _ Python'
+
+unzip with 7zip command:
+To get your files back, extract only the first file of the sequence, and 7z will go through the rest automatically:
+7z e FIRST_PART_OF_COMPRESSED_ARCHIVE
+In our example, this was:
+7z e Windows10_iso.7z.001
+It’s also worth noting that, nowadays, you have many more options available for creating compressed archives with tools like pigz or plzip.
+Do you find compressed split archives practical? Which compression tools are you using to deal with them? Tell us in the comments section below.

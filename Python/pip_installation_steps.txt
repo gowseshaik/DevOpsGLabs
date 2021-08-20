@@ -1,0 +1,164 @@
+Introduction
+
+Pip (Pip Installs Packages) is a software utility that downloads and manages packages from PyPI – the Python Package Index.
+
+Pip is a command-line program; when installed, it adds the pip command line to the system. You can use it to install and manage Python software packages.
+
+In this article, learn how to install pip on Ubuntu 18.04.
+
+tutorial on installing pip on Ubuntu 18.04
+Prerequisites
+
+A Ubuntu 18.04 system
+Access to a user account with sudo privileges
+Access to a terminal window/command line (Ctrl+Alt+T)
+Note: If you are using Python in a virtual environment created with pyvenv or virtualenv, then pip is available regardless of the version of Python in use. This also applies to Python 2.7.9 or newer (Python series 2) and Python 3.4 or later (Python series 3).
+
+
+To check the installation paths for python and pip package location
+=======================================================================
+gouse@host1:/datan$ which python
+/usr/bin/python
+gouse@host1:/datan$ which python3
+/usr/bin/python3
+gouse@host1:/datan$ which pip3
+/usr/bin/pip3
+
+To check list of your package
+=============================
+pip list
+
+Install Pip for Python 3
+Ubuntu 18.04 comes with Python 3 installed by default, but it does not come with pip. To install pip for Python 3 on Ubuntu 18.04:
+
+1. Open the terminal. The simplest way is to right-click on the desktop and select Open Terminal from the drop-down menu.
+
+2. Update the repository package list by running the following command in the terminal:
+
+sudo apt update
+Updating package list in Ubuntu.
+3. Install pip for Python 3 and all the dependencies for building Python modules by running the following command:
+
+sudo apt install python3-pip
+screenshot of the Terminal installing of Python Pip on Ubuntu 18.04
+When prompted, type Y and hit Enter to confirm the install.
+
+4. The package installs quickly. To verify the install run the following command:
+
+pip3 --version
+The installed version might be different for you, but the general output should resemble the line below:
+
+Verifying pip install in the ubuntu terminal.
+5. To upgrade pip3 to the latest version, you would issue the --upgrade command just like for any other PyPI package:
+
+sudo pip3 install --upgrade pip
+example of upgrading to the latest version of Pip.
+Install Pip for Python 2
+To install pip for Python 2 on Ubuntu 18.04:
+
+1. Open the terminal. The simplest way is to use the CTRL+ALT+T shortcut.
+
+2. Update the repository package list by running the following command:
+
+sudo apt update
+3. Install pip for Python 2 and all the dependencies for building Python modules by running:
+
+sudo apt install python-pip
+steps for installing pip Python 2 on Ubuntu.
+If prompted, type Y and hit Enter to complete the installation.
+
+4. To verify the install run the following command:
+
+pip –-version
+At the time of writing this article, the latest version of Pip is 9.0.1, but this may vary.
+
+OUTPUT
+pip 9.0.1 from /usr/lib/python2.7/dist-packages (python 2.7)
+5. This step is optional but highly recommended. Namely, you can install a required file that contains all the packages that can be installed with pip. To install the requirements contained in requirements.txt, run the following command:
+
+sudo pip install -r requirements.txt
+6. To upgrade pip for Python 2 to the latest version, run the --upgrade command:
+
+sudo pip install --upgrade pip
+Essential Pip Commands
+The sections below cover the most essential Pip commands.
+
+Note: If you are using Pip for Python 2, use pip instead of pip3 in the commands.
+
+List All pip Packages
+
+To list installed Pip packages, use the following command:
+
+sudo pip3 list
+Search For a Package
+
+Search for a particular package:
+
+sudo pip3 search Enter_Search_Term
+Installing Software Packages
+
+Type the following to install the latest version of a software package:
+
+sudo pip3 install Enter_Package_Name
+To install a specific version of a software package, specify the version after you have defined the software package name.
+
+For example:
+
+sudo pip3 install Enter_Package_Name==2.4
+Uninstalling a Package
+
+To remove a Python package, type:
+
+sudo pip3 uninstall Enter_Package_Name
+Uninstalling a pip package on Ubuntu 18.04.
+When prompted, type Y and hit Enter to confirm.
+
+Getting a List of Outdated Packages
+
+To prompt a list of your installed outdated packages and see the latest versions available:
+
+sudo pip3 list --outdated
+See below for a sample output:
+
+A list of outdated pip packages on a test Ubuntu system.
+Pip Update Packages
+
+As the apt upgrade command, Pip can also be used to upgrade a software package to the latest version:
+
+sudo pip3 install --upgrade Enter_Package_Name
+Updating a pip package in a terminal window in Ubuntu.
+Get Additional Details
+
+To prompt additional details, run the following command:
+
+sudo pip3 show Enter_Package_Name
+See a sample output below:
+
+Terminal output for a pip package.
+Setup Python Virtual Environments (Optional)
+To create a virtual environment, the python-venv module is required.
+
+Install it with the following terminal command:
+
+sudo apt install python3–venv
+Allow the process to complete. We are using the apt package installer because we’re installing the python-venv module globally.
+
+Once that process completes, you can create a virtual environment for Python.  Change your directory to a location where you want to store your virtual environment. For example:
+
+/users/username/python
+Enter the following command to create a virtual environment in that path:
+
+python3 –m venv my_test_environment
+You can replace my_test­_environment with the name of your project. This environment includes Python, Pip, the Python library, and supporting files. A new directory will be created with the name you provide.
+
+Activate the virtual environment with the following command:
+
+source my_test_environment/activate
+Your command line will change to indicate that you are operating within the new Python virtual environment. From here, you can use Pip to install a module only to this environment.
+
+An example might look as follows:
+
+pip install module_name
+
+
+

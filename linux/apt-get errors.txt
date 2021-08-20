@@ -1,0 +1,35 @@
+error:
+
+apt-get update getting below error.
+
+E: The repository 'http://ppa.launchpad.net/videolan/stable-daily/ubuntu bionic Release' does not have a Release file.
+N: Updating from such a repository can't be done securely, and is therefore disabled by default.
+N: See apt-secure(8) manpage for repository creation and user configuration details.
+
+
+solution:
+=========
+
+To resolve this error, you need to delete the troublesome PPA from your the repository on your system. To achieve this, launch the ‘Software and Updates’ tool as shown.
+
+On the ‘Software & Updates‘ window, click on the ‘Other Software‘ tab. Next, click to uncheck and purge the problematic PPAs.
+
+ex: our problematic PPA is: http://ppa.launchpad.net/videolan/stable-daily/ubuntu
+so unxheck and close it, and next click on reload.
+
+now check with "$ sudo apt-get udate", now it will work without an error.
+
+
+for more info, Please refer:
+https://cloudcone.com/docs/article/how-to-fix-the-repository-is-not-signed-error-on-ubuntu-20-04/
+
+==============
+
+to work with apt-get
+
+$apt-get update
+$apt update
+$apt-get install <somesoftwarename>
+$ apt list --upgradable --> it will show in "$apt update" to upgrade tools, then you have to execute.
+
+

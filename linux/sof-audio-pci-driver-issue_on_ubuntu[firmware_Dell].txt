@@ -1,0 +1,45 @@
+modinfo snd_hda_intel
+get the "dmic_detect:Allow DSP driver selection:" 
+it shows the 
+
+mic_detect:Allow DSP driver selection (bypass this driver) (0=off, 1=on) (default=1); deprecated, use snd-intel-dspcfg.dsp_driver option instead (bool)
+
+Running modinfo snd_intel_dspcfg gives the following info:
+
+parm:           dsp_driver:Force the DSP driver for Intel DSP (0=auto, 1=legacy, 2=SST, 3=SOF) (int)
+
+So I added snd_intel_dspcfg.dsp_driver=1 to my GRUB_CMDLINE_LINUX_DEFAULT to get the same effect. The other values give me no audio.
+
+Also, you should note that both solutions break the internal microphone.
+
+==============================
+
+moment.
+
+I searched nearly 3 hours trying to solve this headache and finally found the solution, just disable this "sof" driver and fall back to intel:
+
+Do:
+
+sudo gedit /etc/default/grub
+
+Change
+
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
+
+to:
+
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash snd_hda_intel.dmic_detect=0"
+
+Then do:
+
+sudo update-grub
+
+and Reboot.
+
+You can check if soundcards are detected with:
+
+aplay -l
+
+Source
+
+https://forums.linuxmint.com/viewtopic.php?f=48&t=311714&sid=66ec8353cda692d136d028b2ae3d977c&start=20

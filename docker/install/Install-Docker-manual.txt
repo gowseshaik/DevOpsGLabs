@@ -1,0 +1,80 @@
+Install Docker on Ubuntu:
+
+	sudo su -
+	sudo apt-get remove docker docker-engine docker.io containerd runc
+	sudo apt-get update
+	sudo apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+	sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+	sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+	sudo apt-get update
+	sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+Test the installation by running a simple container:
+        docker run hello-world
+
+	## FYI Only ## Check Available Version for Install"
+	apt-cache madison docker-ce | awk '{print $3}'
+
+==================
+=============
+Note : .docker will not be available, imidiately of docker installation.
+
+for this, The directory .docker (and the file .docker/config.json) will be created when you successfully authenticate to a Docker registry e.g Docker Hub running the command docker login.
+
+(This presupposes $USER is part of the group docker.)
+
+drwx------  2 gana gana 4096 Jul 21 15:42 .docker
+
+if .docker directory not creating: Please follow below steps
+============================================================
+Manually created the .docker folder using mkdir .docker before restarting though.
+sudo chown "$USER":"$USER" /home/"$USER"/.docker -R
+sudo chmod g+rwx "$HOME/.docker" -R
+ 
+=========================================================================
+
+Install Docker on CentOS:
+
+	sudo yum install -y device-mapper-persistent-data lvm2
+	sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+	sudo yum install -y docker-ce docker-ce-cli containerd.io
+	sudo systemctl start docker
+	sudo systemctl enable docker
+
+Test the installation by running a simple container:
+	docker run hello-world
+
+===========================================================================
+https://docs.docker.com/engine/install/linux-postinstall/
+Add your user to the docker group, giving the user permission to run docker commands:
+        sudo usermod -aG docker cloud_user
+
+===========================================================================
+
+Install docker-compose
+
+sudo curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+==============
+to uninstall docker-compose
+
+Individual Removal if Installed Using curl
+
+It is commonly installed to /usr/local/bin/docker-compose on macs. However, you can run which docker-compose to find the exact location.
+
+Run the following command (*nix systems) to remove:
+rm $(which docker-compose)
+
+If you get a permission denied error then you will need to prepend sudo:
+sudo rm $(which docker-compose)
+
+To verify that it was successful, run the following command which should return nothing:
+which docker-compose
+
+It should say that the command wasn’t found.
+
+
+
+
+

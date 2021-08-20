@@ -1,0 +1,26 @@
+Download Tilix
+# sudo apt-get install tilix
+
+or install from the Pop! Shop
+
+
+Download Tilix from Pop! Shop
+After install, open Tilix to check the terminal application installed fine and works. If installing from the Gnome Terminal, use the following command to launch:
+
+# tilix
+
+Swapping Gnome Terminal for Tilix
+In a terminal, run the following command:
+
+# sudo update-alternatives --config x-terminal-emulator
+
+From the selection presented, select the option which lists tilix.wrapper
+
+In the selection shown below, this is option 3.
+
+Set default terminal
+Setting the default terminal
+To test you have successfully changed the default to Tilix, open a terminal by pressing CTRL +Alt + T, or Super + T.
+
+
+https://www.tecmint.com/tilix-gtk3-tiling-terminal-emulator-for-linux/

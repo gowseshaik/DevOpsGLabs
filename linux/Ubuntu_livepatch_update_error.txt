@@ -1,0 +1,6 @@
+Canonical Livepatch informs about internal error - what to do
+http://askubuntu.com/questions/1150844/ddg#1151022
+
+This worked for me
+
+sudo canonical-livepatch refresh

@@ -1,0 +1,490 @@
+1. Physical servers : baremetal servers
+2. virtual servers: hypervisor -> by using this we enabled virtualization
+   VM challenges:
+    - os maintainance
+    - dynamic
+    - boot time, will take 5 mins
+    - scalability(increasing the infrastructure(resources))
+    - it will take 2-3 weeks, months, based on approvals.
+    - distributed environments(clustered)
+
+3. containarization:
+    - all applications will be scalled with same measurement.
+    - means all environments setup will be same. QA/SIT/PP/Prod.
+Container: image is a package(with all dependency things), when you run an image is called a container.
+    - container will contains light weight operation system.
+    - this doesnt have kernel.
+    - they are containing basic libraries.
+    - in 2 seconds, our application will start.
+    - containers are dynamic nature.
+    - you can restrict, if we want incase of bad containers.
+    - scability(based on resources, we can scale up multiple containers)
+    - all issues we faced in Virtualization, we will resolve in containerization.
+    - to enable containerization on a pyhsical server, you need a os. then you need to install containerization software, this enables virtualization.
+    now we can run our containers.
+Available containerizations in market.
+    - Docker
+    - containerD
+    - LXC
+    - LXD
+    - CRI-O
+    - RKT
+
+so we need to install docker software on your machine.
+then you can enable containerization and work with containers.
+
+Docker:
+    Docker is a containerization platform, to run your containers.
+    Docker is a platform that you can create and run your images.
+Docker commands:
+    # docker stats --no-stream
+
+
+Questions: 
+How to create a docker container for python modules which should call from a private repository.
+
+Leaddevops@gmail.com
+
+Docker Installation:
+         sudo su -
+	sudo apt-get remove docker docker-engine docker.io containerd runc
+	sudo apt-get update
+	sudo apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+	sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+	sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+	sudo apt-get update
+	sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+
+
+docker version
+cd /var/lib/docker
+
+cd
+
+service docker status 
+
+docker will run in three ways.
+
+1. foreground ( it will not get the # command. example: docker run nginx. so we will not use it)
+2. background (-d)(is call as detached mode, it will gives your command # back, docker run -d nginx. )
+3. interactive(-it)(you can get the command prompt, now you can change any thing )
+
+#docker run -d alpine
+if an image is readymade, you can run in detached mode.
+if an image is not ready to serve, you can't run in detached mode.
+
+examples: plain cloths and customized shirts.
+
+if you can to see the container alive, it will not work. so this is why you alpine will not run.
+this is what your OS images without process, it will fails.
+
+#docker run -it alpine
+Note : if you want to come out of the container, use the command CTRL+P+Q
+
+Docker ps columns understanding in details
+
+CONTAINER ID : container id
+IMAGE     : image name, which image you used to run.
+COMMAND   : which process command you used inside your container. to know the commands you used, so you have to inspect your iamge  (docker inspect alpine , and check the value for cmd=)          
+CREATED   : container created time  
+STATUS    : up/exited       
+PORTS     : ports opened
+NAMES     : (you can create a name for your container what you want, docker run --name gouse -d nginx)
+
+Docker cleanup:
+===============
+to clean up containers: docker rm -f `docker ps -aq`
+this command will remove all your containers in your system.
+
+containers is having their own ip.
+docker inspect <container id>
+
+docker is running with in the docker host, so we are unable to access the container ip with 80 port.
+#docker run -d --name portforwarding -p 1234:80 nginx 
+netstat -anp| grep 1234
+you can't run the same command again in docker.
+for dynamic port : -P 
+docker run -d --name Dynamic_portforwarding -P nginx
+
+Note: in real time, docker will not run with above commands as individual. 
+it will run by groups & clustered format.
+
+Logs:
+=====
+docker logs <container id>
+docker logs 2a6792f3b617
+docker logs -f 2a6792f3b617 : -f means followup( it will show continously)
+
+how to enter into a container:
+==============================
+docker exec -it <Container id> <shell>
+docker exec -it 3sh234y0332 bash
+
+docker stop/start/restart <container id / container id's>
+
+Note : static port no's will not change after restart the containers 
+dynamic port no's will change dynamically after restart your containers.
+
+docker rm --> will remove only the stopped containers
+docker rm -f --> will remove forcefully either the container is running/ stopped.
+
+docker stats --no-stream --> to check the memory utilizations.
+
+=========================================
+Docker Images creation.
+image is a package that contains your application as war file, is a readonly can't be edited.
+Images can be created in two ways.
+
+1. Maunal
+2. Automation
+
+Manual: 
+how to create our own conatiner.
+what it the layer of your image:  os
+then you need to spinup of the container.
+image --> Container --> make all your changes in container --> convert it as a new image.
+
+docker ps -aq
+docker rm -f `ps -aq`
+
+Host: 
+docker run -it ubuntu:16.04
+   
+
+inside cont:
+=========
+
+ 1  apt-get update
+    2  clear
+    3  apt-get install -y vim nginx
+    4  clear
+    5  cd /var/www/html
+    6  ls
+    7  vi index.nginx-debian.html
+
+ctrl+pq
+
+98  docker ps
+   99  docker commit -m "Gouse nginx" -c 'CMD /usr/sbin/nginx -g "daemon off;"' -c 'EXPOSE 80' <CONTID> Gousenginx:v1
+  100  docker images
+  101  clear
+  102  docker run -d -P ravinginx:v1
+  103  docker ps
+
+
+Automation:
+dockerfile, by using this we can create our own images.
+
+FROM ubuntu:16.04
+RUN apt-get update
+RUN apt-get install -y vim nginx
+RUN rm /var/www/html/*
+RUN echo "<H1> This is the Automation </H1>" > /var/www/html/index.html
+CMD /usr/sbin/nginx -g "daemon off;"
+EXPOSE 80
+
+docker build -t gouse_ubuntu:v1 .
+
+docker history gouse_ubuntu:v1
+
+file1
+FROM gouse_ubuntu:v1
+RUN rm /var/www/html/*
+COPY index.html /var/www/html/
+
+vi /tmp/index.html
+
+docker build -t gouse_ubuntu:v2 -f file1 /tmp
+
+Practiced:
+==============
+root@ubuntu18-1:~# vi Dockerfile
+FROM ubuntu:16.04
+RUN apt-get update
+RUN apt-get install -y vim nginx
+RUN rm /var/www/html/*
+RUN echo "<H1> This is Automation </H1>" > /var/www/html/index.html
+CMD /usr/sbin/nginx -g "daemon off;"
+EXPOSE 80
+
+
+108  docker build -t auto:v1 .
+  109  docker images
+  110  clear
+  111  docker history auto:v1
+  112  docker run -d -P auto:v1
+  113  docker ps
+
+
+116  vi file1
+FROM auto:v1
+RUN rm /var/www/html/*
+COPY index.html /var/www/html/
+
+
+120  docker build -t gouse_ubuntu:v2 -f file1 /tmp
+  121  docker images
+  122  docker run -d -P gouse_ubuntu:v2
+  123  docker ps
+
+docker build -t newapp:v1 -f dockerfile_myapp /root/labs/docker/iamges/Code
+
+docker hub downloading is always free.
+but to upload you should be authorized user.
+#docker login
+#docker push gouse_ubuntu:v2 --> it will faile becuase it is looking from docker .io repository
+#docker tag gouse_ubuntu:v2 gowseshaik/gouse_ubuntu --> gowseshaik/gouse_ubuntu(account/Repo)
+#docker push gowseshaik/gouse_ubuntu:v2
+
+Docker iamges delete command:
+
+docker images
+Docker system df
+docker image rm alpine
+docker image rm ubuntu nginx
+docker image rm -f ubuntu nginx
+docker container prune --> it will remove, that not running containers.
+docker image prune -a --> it will remove, that where unused images.
+================
+Docker Volumes:
+~~~~~~~~~~~~~~~
+what ever inside the container, that will be gone.
+containers are temparory.
+some time we need to save data, so this is what the volumes concept comes into picture.
+
+ex: it is better to write logs to some where. to persists the data of the container.
+
+commands:
+=========
+
+docker volume ls
+docker volume create logsVol1
+
+docker inspect logsVol1
+output:
+=========
+root@docker:/home/gowseshaik/labs/docker# docker inspect logsVol1
+[
+    {
+        "CreatedAt": "2021-03-21T13:48:54Z",
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/logsVol1/_data",
+        "Name": "logsVol1",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+=======
+
+volumes will be created in docker machine, not in the container.
+lets see, how to attach volume to the container.
+you can add multiple volumes you can add to container. logs 
+
+#docker run -d -P -v logsVol1:/usr/local/tomcat/logs tomcat
+ls -ltr /var/lib/docker/volumes/logsVol1/_data
+
+depending on environment, you can give the volumes during runtime.
+mkdir /root/dev
+touch /root/dev/index.html
+#docker run -d -P -v /root/dev:/usr/local/tomcat/logs tomcat
+docker run -d -P -v /root/dev:/usr/share/nginx/html nginx
+
+mkdir /root/SIT
+touch /root/SIT/index.html
+#docker run -d -P -v /root/SIT:/usr/local/tomcat/logs tomcat
+docker run -d -P -v /root/SIT:/usr/share/nginx/html nginx
+
+mkdir /root/Prod
+touch /root/Prod/index.html
+#docker run -d -P -v /root/Prod:/usr/local/tomcat/logs tomcat
+docker run -d -P -v /root/Prod:/usr/share/nginx/html nginx
+
+=====================
+
+Docker Compose:
+~~~~~~~~~~~~~~~
+imperative commands will run simple things and will not work in compose.
+declerative syntax will work for compose with yml file.
+
+utility called docker-compose -v
+default it will not be avialable, please execute below commands, it will install.
+
+sudo curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+root@docker:~# docker-compose -v
+docker-compose version 1.23.2, build 1110ad01
+
+vi docker-compose.yml(standard naming convention, so no need to mention in below command.)
+
+version: '3.0'
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: somewordpress
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+   wordpress:
+     depends_on:
+       - db
+     image: wordpress:latest
+     ports:
+       - "8000:80"
+     restart: always
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+volumes:
+    db_data:
+
+
+docker-compose up -d 
+docker ps
+Note: Dockerfile run an image, docker-compose runs containers
+
+vi compose.yml
+docker-compose up -f compose.yml --scale webserver=2 --scale=2 appserver=2 -d 
+you can bring down everything with down
+docker-compose -f compose.yml down
+
+docker-compose is completely useless for production environments.
+we use only for development environments to test.
+there will be not high availability.
+==================
+
+Docker swarm(to run the containers on multiple machines(to over come the docker-compose issue))
+this is the high availability.
+
+Swarm means a group of docker machines.
+machine 1: intall docker (one will be acting as a manager)
+machine 2: install docker (others will be acting as a workers)
+machine 3: install docker (others will be acting as a workers)
+
+Note : what ever you do/work of manager machine only.
+
+Goto
+machine 1: 
+# docker swarm init
+now the token will generate, and you can run the same token on node machines.
+
+docker node ls --> will show the list of the servers and status.
+
+now need to deploy applications on all servers, so to move forward we need docker service.
+
+docker service create --name gousesvc --replicas 5 -p 1234:80 nginx
+docker service rm gousesvc --> to remove the service.
+
+docker service ls
+docker service ps gousesvc  --> to see where our created service is running 
+
+Note: we can have multiple masters.
+
+goto node,
+service docker stop
+service docker start
+scale up:
+~~~~~~~
+if i want more containers. 5 already there, we are increasing 3 more.
+
+docker service scale gousesvc=8
+docker service gousesvc
+
+scale down:
+~~~~~~~~~~
+docker service scale gousesvc=2
+docker service gousesvc
+
+=====================
+Docker loadbalancing:
+~~~~~~~~~~~~~~~~~~~~~
+
+docker service create --name loadbalancng --replicas 3 -p 1234:3000 learndevops/samplemyapp:v1
+
+1234 port no is service level port no. not the host port no.
+
+Rolling update: for your deployment:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+docker service update --image learndevops/samplemyapp:v2 loadbalancng
+
+by using docker service, how many containers we can run at a time.
+many
+by using docker service, how many image we ran at a time.
+only one image
+
+==========
+To run the 
+
+Docker stack:
+~~~~~~~~~~~~~
+is used for multiple images, with multiple services.
+
+it will run with yml file, stack-dogscats.yml
+
+we will use this in production to run multiple services together.
+
+#docker stack deploy -c stack.yml myapp
+docker stack ls
+docker stack services myapp
+docker stack rm myapp
+
+docker swarm leave --> to comeout of the swarm manager.(to make it an individual machine)
+docker swarm leave -f 
+
+Docker Networking:
+~~~~~~~~~~~~~~~~~~
+
+if one machine wants to communicate with another machine.
+we use routers,
+
+A----------------->B 
+C----------------->D 
+how can A machine will communicate with D machine,
+ we will connect with switches.
+
+when you install docker software on your machine, it will create a default network "docker 0"
+
+ping will work with ip address only, not with container id.
+
+ping 172.17.0.2 --> will work
+ping as3s9  --> will not work
+
+docker 0 will not allow you to communicate with DB network.
+
+so please create your own network.
+
+Application: ----------------> Oracle DB
+
+docker network create gousenetwrk
+
+docker inspect gousenetwrk
+docker run -d --name app --net gousenetwrk busybox:1.28 sleep 3600
+docker run -d --name DB --net gousenetwrk nginx
+ping app
+ping <app ip>
+ping <container id>
+
+
+types of networks:
+
+1. bridge Driver (default, docker 0)
+2. Host Network (your container and host machine will use the same host ip)
+docker run -d -P --net host httpd
+disadvantage is 80 port no, is alread working on the system. so host network will work on only one container, not on multiple container.
+3. None Network (Completely useless, if you dont want any network. you can use this none network)
+
+In organizations , you will not use this networks.
+there is another network comes it the picture to communicate with one another machines.
+
+4. overlay network : will work on docker swarm
+5. null Network
+
+=====================
+

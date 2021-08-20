@@ -1,0 +1,81 @@
+monitoring catogorize in 3 parts
+
+1. Host level monitoring:  ensure your host is up and running
+    -Hardware resources
+        -CPU
+        -Memory
+        -Disk space
+        -inodes utilization
+        -pnode utilization
+
+2. Process level monitoring:
+    - services should be up and running.
+    - by using ports to understand service
+
+3. application level monitoring
+    - tools to ensure application is up and running.
+
+Monitoring Tools:
+~~~~~~~~~~~~~~~~~
+
+sitescope
+1. Prometheus
+1.1. Grafana
+2. Riemann
+3. Sensu
+4. Zabbix
+5. Nagios
+6. Icinga
+7. Cacti
+8. LibreNMS
+9. Observium Community
+10. Pandora FMS
+11. LogRhythm NetMon Freemium
+12. SolarWinds Real-Time Bandwidth Monitor
+13. Famatech Advanced IP Scanner
+14. AppNeta PathTest
+
+================
+Nagios:
+~~~~~~~
+Nagios core(lagacy)
+Nagios XI (Active version, having much user interface)
+
+==================
+Prometheus : is a data collector
+Grafana : is a data visualizer.
+
+==========
+Splunk: takes the data from machines, and it shows you(we can call splunk as reactive tools not proactive tools). 
+and please note splunk is not a monitoring tool.
+
+Logging /Log Aggregation:
+
+Centralization of logging for 100's of machines
+
+it will helps you , to collects data from multiple machines and place it on one server.
+
+Splunk Technical architecture:
+Forwarder softwares( its an agent for splunk, should be install on every machine) --> indexes --> searcHead.
+Forwarder:
+- Unicersal Forwarder
+- Heavy Forwarder
+- Light Forwarder
+
+Indexer:
+Search Head:
+
+Splunk installation: 8 GB
+forwarder: 1 GB
+
+index="main"
+
+index="main" 404
+
+index="main" "/Gouse"
+
+
+file1. log
+file2.log
+....
+file100. log

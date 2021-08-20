@@ -1,0 +1,4 @@
+Open the terminal and copy paste this command:
+
+echo $XDG_CURRENT_DESKTOP
+For example, it shows that I am using GNOME desktop in Ubuntu 20.04:

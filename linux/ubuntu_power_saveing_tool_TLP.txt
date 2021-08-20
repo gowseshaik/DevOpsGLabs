@@ -1,0 +1,53 @@
+TLP works to save power and prevent overheating. It provides AMD Radeon GPU power management. It provides power management for CPU, GPU, WiFi, Bluetooth, HDD and more.
+
+You can install TLP like so:
+
+sudo apt install tlp tlp-rdw
+After installation run  sudo tlp start and reboot.
+
+You will see longer battery life and reduced CPU / GPU heating after installation and reboot. However, it may take a few days to get the full effect of TLP.
+
+TLP runs as a service. It is started from the terminal and it has no GUI.
+
+After you install TLP, you run it for the first time using this command in the terminal:
+
+sudo tlp start
+Then you do not need to run it again. It will run automatically with each reboot.
+
+You can check the status of the TLP service by running the following command in the terminal:
+
+sudo systemctl status tlp.service
+You will get an output like this:
+
+● tlp.service - TLP system startup/shutdown
+   Loaded: loaded (/lib/systemd/system/tlp.service; enabled; vendor preset: enabled)
+   Active: active (exited) since Tue 2019-08-27 23:06:37 +03; 3 days ago
+     Docs: https://linrunner.de/tlp
+ Main PID: 2374 (code=exited, status=0)
+    Tasks: 0
+   Memory: 0B
+   CGroup: /system.slice/tlp.service
+enabled means it will run automatically every time the system starts.
+
+To see TLP's extended status information, please run the following command in the terminal:
+
+sudo tlp-stat
+Please read more about TLP here.
+https://linrunner.de/tlp/
+
+
+2.) Install Slimbook Battery:
+
+Slimbook Battery is a graphical tool based on TLP, it offers an indicator menu that includes Energy Saving, Balanced, and Maximum Performance modes.
+
+sudo add-apt-repository ppa:slimbook/slimbook
+
+sudo apt update
+
+sudo apt install slimbookbattery
+
+(Optional) To remove Slimbook Battery as well as its PPA, run following commands one by one:
+
+sudo add-apt-repository --remove ppa:slimbook/slimbook
+
+sudo apt remove --autoremove slimbookbattery

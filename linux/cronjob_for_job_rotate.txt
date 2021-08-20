@@ -1,0 +1,6 @@
+Simple log cleanning
+
+vi /etc/cron.daily/logrotate
+
+# optionnal, delete log archives
+sudo find /var/log -type f -iname *.gz -delete

@@ -1,0 +1,239 @@
+jenkins url : http://35.232.247.236:8080/
+git clone https://github.com/lerndevops/labs.git
+apt-get update
+apt-get install dos2unix
+
+Ansible -Controller(Master), its will communicate with SSH protocol authentication of user authentication
+        Ansible is python based protocol
+        it follows PUSH method.
+        it reads the data from yaml.
+        its an agentless tool.
+        Ansible controller will hit a command at one place and control every where and everything.
+        Ansible controller control all Managed -Nodes
+Ansible cannot be installed on windows machine, but manage windows machine.
+
+starting/stopping -- are called operational changes
+changing/modifying in tools -- called configurational changes.
+
+process of configuration:
+  Configuration identification
+  Configuration Control
+
+Why Ansible:
+  Change management
+  Provisioning
+  Orchestration
+  Automation
+  IDEMPOTENCE
+  IDEMPOTENCE : A Function is idempotent if repeated applications has the same affect as a single appliction.
+  shell script will not have inteligncy,
+  But ansible is inteligncy, it is having IDEMPOTENCEY.
+  Simple
+  Powerful
+  Agentless : it uses Openssh and winRM(windows)
+  YAML: YAML Ain't Markup Languge , is a human -readable data serialization language.
+  is a super set of JSON (YAML<->JSON)
+  encrypt-decrypt(with Vault)
+  Ansible gives some destruction also. so be careful.
+
+https://notepad.pw/doz72279
+
+Ansible installation:
+*********************
+Controller:
+========
+sudo su -
+git clone https://github.com/lerndevops/labs
+cd labs
+cd cloud
+./setup-user.sh                    # apt-get update;apt install dos2unix;dos2unix setup-user.sh
+
+cd
+cd labs/ansible/install
+installAnsible.sh
+
+ansible --version
+cd /etc/ansible/
+ls
+ansible.cfg --> all ansible related settings will have in this file.
+# uncomment this to disable SSH key host checking
+host_key_checking = False
+
+hosts --> is officially called as inventory file, where you will configure all node details.
+## [webservers] --> you are grouping all below ip's/names
+## alpha.example.org
+## beta.example.org
+## 192.168.1.100
+## 192.168.1.110
+
+roles:
+
+
+
+Remote Nodes:
+===========
+
+sudo su -
+git clone https://github.com/lerndevops/labs
+cd labs
+cd cloud
+./setup-user.sh                    # apt-get update;apt install dos2unix;dos2unix setup-user.sh
+
+-----------------
+Ansible Commands:
+-----------------
+1. connect with user based authentication:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+user/pwd: devops/today@1234
+root@master:~# ansible all -m ping -u devops -k
+-vvvv : it will shows the command will show the backend execution to you.
+root@master:~# ansible all -m ping -u devops -k -vvvv
+
+2. connect with ssh(key) based authentication:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+it will sujected, all common user(devops) on all node machines.
+
+ss-keygen --> to generate key and saves in /home/devops/.ssh/id_rsa
+
+public key: /home/devops/.ssh/id_rsa.pub
+private key: /home/devops/.ssh/id_rsa
+
+perfered authentication is Password based authentication rather than SSH
+
+
+Ansible Configurations:
+~~~~~~~~~~~~~~~~~~~~~~~~
+do you need a good practice all ip add in host file?
+no.so we will create our own inventory for your things.
+
+create a ansible project folder. So, nobody will disturb it.
+copy ansible.cfg
+vi gouseinv <-- add your node ips under this gouseinv
+
+vi ansible.cfg
+[defaults]
+# some basic default values...
+inventory       = /root/gouse/gouseInv
+
+command:
+cd project directory
+ansible -i gouseInv all -m ping -u devops -k
+
+for not to ask for user/pass , when you run the ansible inventory command.
+vi gouseInv
+ansible_ssh_user=devops ansible_ssh_pass=today@1234
+
+34.122.119.243 ansible_ssh_user=devops ansible_ssh_pass=today@1234
+35.239.40.124 ansible_ssh_user=devops ansible_ssh_pass=today@1234
+
+ansible -m ping
+ansible -m ping PROD
+ansible -m ping sit
+
+How to run an adhok requests. onfly commands
+ansible all -a "touch /tmp/ravifile"
+to check from controler or above executed things.
+
+ansible all -a "ls -ltr /tmp/ravifile"
+
+i want to a file under opt directory?
+here /opt needs sudo privileges'. so you have to give the -b operational
+ansible all -b -a "touch /opt/ravifile"
+ansible all -b -a "ls -ltr /opt/ravifile"
+
+ansible all -a "free -m" --limit 35.184.77.173
+
+--limit : is used for limiting your execution, instead of all servers, we will test on limited servers. its a test.
+ --limit , it a simulation, before for your final execution?
+
+ansible all -m setup --> it will gives you all your nodes machines data.
+ansible above commands shows, it collects FACTS( we can called this data as FACTS)
+
+playbooks:(we use YAML language)--> is in the combination of Key value pair, List, Dict.
+~~~~~~~~~~
+officially: docs.ansible.com
+its a opensource
+and enterprise called as ansible tower.
+
+example: to read facts of nodes
+to overcome the adhoks commands issues, we are using playbooks.
+ansible execution language is called a playbook.
+
+YAML structure is a key value pair.
+Key : value
+Trainer : Ravi
+
+when there is a plural, then List comes into this picture.
+
+List
+
+Participants:
+  -max
+  -harsh
+  -vijay
+
+Dict
+
+Participants:
+  -max
+    exp: 10
+    Cert: aka
+  -harsh
+    exp: 10
+    Cert: aka
+  -vijay
+    exp: 10
+    Cert: aka
+
+ansible modules:
+~~~~~~~~~~~~~~~~
+
+arround 3000 modules inorder to use ansible taks
+-m is the module and "ping" is the module name.
+
+lets create our first playbook.
+
+vi copy.YAML or copy.yml
+-hosts: all
+ tasks:
+    -name: copying a file
+      copy:
+        src: /tmp/testfile
+        dest: /tmp/
+
+root@master:~/gouse# touch /tmp/testfile
+root@master:~/gouse# ansible-playbook copy.yaml
+
+create a new file playbook:
+
+- hosts: all
+  tasks:
+   - name: create a file
+      file:
+       path: /tmp/testfile
+       state: gouse
+
+debug: --> is to print the values with msg:
+syntax:
+debug:
+  msg: "{{item}}
+
+create a new file with variables print.
+
+- host: all
+  var
+
+
+Ansible role: 
+for execution of the playbook successfully, ansible introduced a concept a "Ansible role"
+its a prerequisite for the playbook execution.
+it will come with a single package.
+
+concepts:
+Folders
+calling jdk.yml in tomcat.yml
+the main logic will be created as main.yml <- tomcat.yml
+inputs artifacts in "files" folder
+
+---------------

@@ -1,0 +1,21 @@
+What I suggest is that you delete these crash reports. Open a terminal and use the following command:
+
+sudo rm /var/crash/*
+This will delete all the content of directory /var/crash. This way you won’t be annoyed by the pop up for the programs crash that happened in the past. But if a program crashes again, you’ll again see system program problem detected an error. You can either remove the crash reports again like we just did, or you can disable the Apport (debug tool) and permanently get rid of the pop-ups.
+
+Permanently get rid of system error pop up in Ubuntu
+If you do this, you’ll never be notified about any program crash that happens in the system. If you ask my view, I would say it’s not that bad a thing unless you are willing to file bug reports. If you have no intention of filing a bug report, the crash notifications and their absence will make no difference.
+
+To disable the Apport and get rid of system crash report completely, open a terminal and use the following command to edit the Apport settings file:
+
+sudo gedit /etc/default/apport &
+The content of the file is:
+
+# set this to 0 to disable apport, or to 1 to enable it
+# you can temporarily override this with
+# sudo service apport start force_start=1
+enabled=1
+
+Change the enabled=1 to enabled=0. Save and close the file. You won’t see any pop up for crash reports after doing this. Obvious to point out that if you want to enable the crash reports again, you just need to change the same file and put enabled as 1 again.
+
+For more info, Please refer: https://itsfoss.com/how-to-fix-system-program-problem-detected-ubuntu/

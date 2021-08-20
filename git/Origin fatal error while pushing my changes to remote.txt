@@ -1,0 +1,111 @@
+to push my new changes to remote repository, getting remote origin fatal error
+
+gouse@gouse-G3-3500:/data/DevOpsUniversity/labs$ git remote -v 
+origin	https://github.com/gowseshaik/labs.git (fetch)
+origin	https://github.com/gowseshaik/labs.git (push)
+
+gouse@gouse-G3-3500:/data/DevOpsUniversity/labs$ git remote add origin https://github.com/gowseshaik/labs.git
+error: remote origin already exists.
+
+gouse@gouse-G3-3500:/data/DevOpsUniversity/labs$ git push origin master
+Username for 'https://github.com': gowseshaik
+Password for 'https://gowseshaik@github.com': 
+To https://github.com/gowseshaik/labs.git
+ ! [rejected]        master -> master (fetch first)
+error: failed to push some refs to 'https://github.com/gowseshaik/labs.git'
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+gouse@gouse-G3-3500:/data/DevOpsUniversity/labs$ git fetch
+remote: Enumerating objects: 16, done.
+remote: Counting objects: 100% (16/16), done.
+remote: Compressing objects: 100% (10/10), done.
+remote: Total 10 (delta 8), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (10/10), 1.89 KiB | 5.00 KiB/s, done.
+From https://github.com/gowseshaik/labs
+   d95b2c7..ea536e2  master     -> origin/master
+
+gouse@gouse-G3-3500:/data/DevOpsUniversity/labs$ git pull
+Updating d95b2c7..ea536e2
+Fast-forward
+ docker/install/Install-Docker-manual.txt     |  2 +-
+ docker/misc/1111.Docker-Command Notebook.txt | 76 ++++++++++++++--------------
+ 2 files changed, 40 insertions(+), 38 deletions(-)
+gouse@gouse-G3-3500:/data/DevOpsUniversity/labs$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	new file:   docker/misc/Changing docker default storage path.txt
+
+gouse@gouse-G3-3500:/data/DevOpsUniversity/labs$ git commit -m "Docker storage path changing"
+[master 36d0857] Docker storage path changing
+ 1 file changed, 37 insertions(+)
+ create mode 100644 docker/misc/Changing docker default storage path.txt
+gouse@gouse-G3-3500:/data/DevOpsUniversity/labs$ git remote add origin https://github.com/gowseshaik/labs.git
+error: remote origin already exists.
+
+
+solution:
+=========
+gouse@gouse-G3-3500:/data/DevOpsUniversity/labs$ git remote rm origin
+
+gouse@gouse-G3-3500:/data/DevOpsUniversity/labs$ git remote add origin https://github.com/gowseshaik/labs.git
+
+gouse@gouse-G3-3500:/data/DevOpsUniversity/labs$ git push origin master
+Username for 'https://github.com': gowseshaik
+Password for 'https://gowseshaik@github.com': 
+Enumerating objects: 8, done.
+Counting objects: 100% (8/8), done.
+Delta compression using up to 12 threads
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (5/5), 950 bytes | 950.00 KiB/s, done.
+Total 5 (delta 3), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
+To https://github.com/gowseshaik/labs.git
+   ea536e2..36d0857  master -> master
+gouse@gouse-G3-3500:/data/DevOpsUniversity/labs$ 
+
+
+
+error:
+
+git push origin final                                                                                                                          final 
+git@github.com: Permission denied (publickey).
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+error:
+$ git branch -M final
+fatal: Branch rename failed
+solution:
+ gouse  /  data  DevOps-HandsON  git checkout -b final             master 
+Switched to a new branch 'final'
+ gouse  /  data  DevOps-HandsON                                     final 
+
+error: 
+ gouse  /  data  DevOps-HandsON  git push -u origin final
+error: src refspec final does not match any
+error: failed to push some refs to 'https://github.com/gowseshaik/DevOps-HandsOn.git'
+Solution:
+i have not added any thing into my local repo
+
+step1:
+-----
+$ git add .
+All I had to do was:
+step2:
+------
+$ git commit -m "initial commit"
+step3:
+------
+$ git push origin final
+Success!
+
+

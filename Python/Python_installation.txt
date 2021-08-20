@@ -1,0 +1,51 @@
+To list all python versions in default locations
+ls /usr/bin/python*
+
+To remove just python3 package
+sudo apt-get remove python3.5
+
+plus it's dependent packages
+sudo apt-get remove --auto-remove python3.5
+
+plus configuration and/or data files of python3
+sudo apt-get purge python3.5
+
+both configuration and/or data files of python3.5 and it's dependencies
+sudo apt-get purge --auto-remove python3.5
+
+How to install new version of python
+sudo apt-get update
+
+sudo apt-get install python3
+
+Also, see https://docs.python-guide.org/starting/install3/linux/ or install python3.8 https://linuxize.com/post/how-to-install-python-3-8-on-ubuntu-18-04/
+
+ModuleNotFoundError: No module named '_sqlite3'.
+sudo apt-get install libsqlite3-dev
+./configure --enable-loadable-sqlite-extensions && make && sudo make install
+
+********
+Warning: 
+********
+Very careful before using above command.
+In case you successfully uninstalled default package, use below command ;)
+sudo apt-get install ubuntu-desktop
+
+For Linux users: you can download the 3.7.0 version from the terminal
+
+sudo apt-get update && sudo apt-get upgrade
+sudo apt-get install python3.7
+
+note : just change the second command to the latest stable version instead of python3.7, currently 3.8
+get the stabled versions: https://www.python.org/downloads/source/
+
+********************************************
+environment variable configuration in ubuntu
+********************************************
+
+In bash, you can use export:
+
+export PYTHONPATH=/path/to/library
+export library_HOME=/path/to/library_HOME
+etc.
+You can put these lines in your ~/.bashrc or ~/.bash_profile to have them loaded every time you start a login shell.

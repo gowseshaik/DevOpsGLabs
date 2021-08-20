@@ -1,0 +1,3 @@
+python -m virtualenv myenv2
+cd myenv2
+source bin/activate

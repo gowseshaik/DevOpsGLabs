@@ -1,0 +1,9 @@
+tree view tool:
+
+sudo apt-get install tree
+
+sudo tree -L /var/lib/docker
+sudo tree -L 1 /var/lib/docker
+sudo tree -L 2 /var/lib/docker
+
+

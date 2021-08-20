@@ -1,0 +1,7 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: copy ansible inventory file to all nodes
+      copy: src=/etc/ansible/ansible.cfg
+            dest=/tmp/
+   

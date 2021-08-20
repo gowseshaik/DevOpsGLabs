@@ -1,0 +1,7 @@
+Take a Screenshot of the Whole Screen
+Simply press the Print Screen button on your keyboard to capture a clip of the entire screen. The screenshot will be auto-saved in the Pictures directory.
+
+Capture a Specific Area in Ubuntu
+You might find yourself in situations when you only have to capture a specific section of the entire screen---may be a dialog box, something specific on your browser, etc.
+
+In such cases, press Shift and Print Screen together to capture the screenshot.

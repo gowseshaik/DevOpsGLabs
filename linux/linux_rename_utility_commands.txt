@@ -1,0 +1,12 @@
+install rename utility to replace text of bulk files/folders with the help of find command.
+
+$sudo apt install rename
+
+$find . -type f -exec rename 's/sourcetext/targetText/g' {} +
+
+special charecters:
+
+$find . -type f -exec rename -f 's/\[|\]//g' {} +
+
+for spaces "   ."
+$find . -type f -exec rename -f 's/    ././g' {} +

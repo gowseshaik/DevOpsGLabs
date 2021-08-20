@@ -1,0 +1,15 @@
+sudo apt-get update
+sudo apt-get install --reinstall ubuntu-desktop
+
+I had the same problem, and none of the solutions posted here worked.
+What worked for me is the following:
+
+     sudo apt-get upgrade
+     sudo reboot
+Commands such as apt-get update where not working before reboot. After rebooting I opened a terminal (Ctrl + Alt + T) and updated everything
+
+    sudo apt-get update
+    sudo apt-get dist-upgrade
+and everything seems to work fine.
+
+

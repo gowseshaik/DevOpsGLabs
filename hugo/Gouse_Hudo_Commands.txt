@@ -1,0 +1,95 @@
+apt install hugo
+apt upgrade hugo
+apt version
+
+hugo manual installation steps
+
+wget https://github.com/gohugoio/hugo/releases/download/v0.85.0/hugo_0.85.0_Linux-64bit.deb
+
+sudo dpkg -i hugo_0.85.0_Linux-64bit.deb
+
+
+wget https://github.com/gohugoio/hugo/releases/download/v0.85.0/hugo_0.85.0_Linux-ARM64.deb
+
+https://hostadvice.com/how-to/how-to-install-hugo-on-ubuntu-18-04/
+
+Create a new site
+==================
+$ hugo new site rootsongjc-hugo
+Create a new page
+$ hugo new posts/cheatsheets.md
+This will create a new file on contents/posts/cheatsheets.md.
+
+Build site
+==========
+$ hugo
+Your site files located on public folder.
+
+Debug
+=====
+$ hugo server
+Debug your site on http://localhost:4001. Any file changed will lead to website live update.
+
+===
+create a project:
+hugo new site portfolio
+
+To start server
+hugo server
+Web Server is available at http://localhost:1313/ (bind address 127.0.0.1)
+open http://localhost:1313/
+Note: it will be blank, because there is no THEME and content in it.
+
+To add theme to your project
+go to https://themes.gohugo.io/
+and choose one theme from the lised.
+
+To download & install/add a theme, from your selected theme
+$ git clone https://github.com/eddiewebb/hugo-resume.git
+$ cd hugo-resume/exampleSite/
+$ hugo server --themesDir ../..
+or 
+$ hugo -t hugo-resume --themesDir ../.. server
+
+
+The config file 
+Copy the config.toml in the exampleSite to the root of your Hugo site. Change strings as you like.
+
+try for another project:
+git clone https://github.com/themefisher/academia-hugo.git
+cd academia-hugo/examplesite
+$ hugo -t academia-hugo --themesDir ../.. server
+
+try for another project:
+https://github.com/somratpro/somrat.git
+cd somrat/examplesite
+$ hugo -t somrat --themesDir ../.. server
+
+reference : https://hostadvice.com/how-to/how-to-install-hugo-on-ubuntu-18-04/
+
+to copy entire examplesite to your site directory.
+cd hugo-resume/exampleSite/
+cp -rf * /data/webProjects/Hugo_Projects/portfolio/
+
+it will replace all directories already created at the time of $hugo new site <your site name>
+
+
+The following command will generate your static website to the ./public directory:
+just run a command with "hugo"
+$ hugo
+
+$ hugo -D
+
+Hugo - Deploy public folder to local Apache server
+# Comment out baseURL from config.toml file
+ 
+hugo hugo --buildDrafts
+ 
+cp -a public/* /var/www/html/
+
+hugo on nginx
+https://gideonwolfe.com/posts/sysadmin/hugonginx/
+
+
+
+

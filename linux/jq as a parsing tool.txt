@@ -1,0 +1,2 @@
+unix parsing tool jq
+sudo apt install jq -y

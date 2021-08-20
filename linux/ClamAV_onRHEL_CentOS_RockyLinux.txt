@@ -1,0 +1,7 @@
+I have used ClamAV on RHEL and CentOS installations.
+You ‘should’ be able to use the same packages on the Rocky distribution…
+Seek the ‘clamav’ packages at (or any of the other EPEL mirror sites):
+https://dfw.mirror.rackspace.com/epel/8/Everything/x86_64/Packages/c/
+
+Remember, you’re only scanning for ‘Windows’-based files, and should limit the scans to areas where ‘users’ might deposit ‘Windows’ files onto the Linux system (ie. /tmp,/var/tmp/, HOME, etc)
+

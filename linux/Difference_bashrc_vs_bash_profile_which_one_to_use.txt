@@ -1,0 +1,35 @@
+We have different configuration files which are used to setup system wide configuration. But we always have some requirement to setup user specific customization such as umask, alias, PATH variable etc. In such case we can use these user specific configuration files such as .bashrc, .bash_profile.
+
+/etc/profile:
+	This is the system-wide initialization file executed during login. It usually contains environment variables, including an initial PATH, and startup programs.
+
+/etc/bashrc:
+	This is another system-wide initialization file that may be executed by a user’s .bashrc for each bash shell launched. It usually contains functions and aliases.
+
+~/.bash_profile:
+	If this file exists, it is executed automatically after /etc/profile during login
+
+~/.bash_login:
+	If .bash_profile doesn’t exist, this file is executed automatically during login
+
+~/.profile:
+	If neither .bash_profile nor .bash_login exists, this file is executed automatically during login. This is the default in Debian-based distributions, such as Ubuntu. Note that this is the original Bourne shell configuration file
+
+~/.bashrc:
+	This file is executed when a non-interactive bash shell starts, i.e., a new terminal window in X. This file is often referred to in the bash interactive scripts, such as ~/.bash_profile
+
+~/.bash_logout:
+	This file is executed automatically during logout
+
+*************************
+.bashrc vs .bash_profile:
+*************************
+
+1. The primary thing to understand is that the rc files are for all shell invocations while the profiles are strictly for interactive shells.
+
+2. An interactive shell is where you (end user) types the command while an non-interactive shell is when shells are launched by other programs such as a script with #!/bin/bash as SHEBANG value
+3. By default ~/.bashrc is executed as part of ~/.bash_profile to load the alias function
+
+
+
+for more info, please refer: https://www.golinuxcloud.com/bashrc-vs-bash-profile/

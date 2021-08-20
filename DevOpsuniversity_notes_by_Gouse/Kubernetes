@@ -1,0 +1,127 @@
+Kubernetes:
+is an orchestration tool and is an alternative to docker swarm.
+
+container orchestration tools:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Rancher
+Nomad
+Docker swarm
+Mesos
+Kubernetes
+VMware Tanzu
+OpenShift
+AKS
+EKS
+GKE
+
+kubernetes will not create any containers.
+for containers we will use docker.
+to manage containers, kubernetes is a Orchestration manager
+
+Kubernetes will have detailed architecture.
+
+Master will containers 4 important components.
+1. API Server
+2. Scheduler
+3. Controller manager
+4. etcd
+
+Master to manage nodes with the help of below utilities.
+
+if you wana perform any activity, you have to use kubctl utility.
+1. Kubctl utility only and always talks to APIServer.(this accepts your requests and perform all required activity)
+2. Scheduler utility will takes responsibility to putting your container on your availability nodes(based on nodes availability capacity).
+3. Controller Manager utility manages your to maintan your desired state and note there are many controller (if container deleted unfortunately,controller will take care)
+4. etcd utility is a key value based database of the cluster.
+
+Loadbalaner is a another feature.
+
+
+Kubelet(will talks nodes, with the help of docker)
+is to use the docker to download image an run the container.
+
+you have to install networking software in kubernetes.
+#kubectl get nodes.
+kubernetes by default, 2 CPU cores & 4 GB RAM by default.
+
+in kubernetes will run pod's 
+pod is security layer on top of your container, is called a pod.
+
+# kubectl run pod1 --image nginx
+
+#kubectl get pods
+#kubectl get pods -o wide
+#kubectl describe pod pod1
+#kubectl delete pod pod1
+vi pod.yml
+#kubectl create -f pod.yml
+
+kubectl run pod1 --image nginx --dry 
+
+#kubectl exec -it ravipod --bash
+
+if you want to come out CTRL+P+Q
+you can create multi container, but in enterprise level we will not use, becuase pod should be unique.
+
+the pod will not be accessible, outside user.
+
+this is called, service has been introduced.
+
+in docker "-P" we used, in the same way the service also workes with --type NodePort.
+
+#kubectl expose pod pod1 --name <serviceName> --port 1234 --target-port 80 --type NodePort
+
+#kubectl expose pod pod1 --name svc1 --port 1234 --target-port 80 --type NodePort
+#kubectl get svc 
+[Outside]NodePort : 30000-32767
+[Internal]ClusterIP : curl 10.103.141.143:1234
+
+==========
+High Availability:
+
+we need to run multiple pods in a single shot. and work with scaleup and scale down.
+
+this is done by controllers.
+RS : Replicat Set.
+service performance loadbalancing here.
+
+#kubectl crete -f http://raw.githubusercontent.com.....yml
+#kubectl get rs 
+#kubctl get pods -o wide
+Scale up:
+~~~~~~~~~
+#kubectl scale rs myrs --replicas 5
+#kubectl get pods
+
+Scale down:
+~~~~~~~~~
+#kubectl scale rs myrs --replicas 3
+#kubectl get pods
+
+while true; do curl 10.96.32.234:80; sleed 1; echo "";done 
+#kubectl delete all -all --> it will detlets all.
+
+============
+Deployment controller.
+~~~~~~~~~~~~~~~~~~~~~~
+#kubectl get deploy 
+#kubectl get pods
+#kubctl get deploy
+#kubectl get svc
+
+#kubectl set image deploy kubeserve app=leaddevops/kubserve:v2
+#kubectl rollout status deploy kebserve
+
+#kubectl set image deploy kubeserve app=leaddevops/kubserve:v3
+#kubectl rollout status deploy kebserve
+if any errors found in your container, then go for rollout with undo with v2
+#kubectl rollout undo deploy kebserve
+if you want to rollback with version 1, then mention --to-revision=1
+#kubectl rollout undo deploy kebserve --to-revision=1
+#kubectl rollout history deploy kubeserve
+--argo rollouts , is an addon
+
+to configure a private repo in docker, there is a file called deamon.json
+
+===============
+

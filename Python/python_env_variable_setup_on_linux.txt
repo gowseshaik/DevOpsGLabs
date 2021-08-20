@@ -1,0 +1,10 @@
+Setting Path at Unix/Linux
+To add the Python directory to the path for a particular session in Unix −
+
+In the csh shell − type setenv PATH "$PATH:/usr/local/bin/python3" and press Enter.
+
+In the bash shell (Linux) − type export PYTHONPATH=/usr/local/bin/python3.4 and press Enter.
+
+In the sh or ksh shell − type PATH = "$PATH:/usr/local/bin/python3" and press Enter.
+
+Note − /usr/local/bin/python3 is the path of the Python directory.

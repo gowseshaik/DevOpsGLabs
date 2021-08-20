@@ -1,0 +1,3 @@
+if network tools not working
+sudo apt install net-tools
+

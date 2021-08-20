@@ -1,0 +1,3 @@
+The GUI way
+
+Start the gnome-tweak-tool, open the Windows tab and switch the buttons for Titlebar Buttons in the right panel

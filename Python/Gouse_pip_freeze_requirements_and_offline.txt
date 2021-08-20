@@ -1,0 +1,71 @@
+If you want install python libs and their dependencies offline, finish following these steps on a machine with the same os, network connected, and python installed:
+
+1) Create a requirements.txt file with similar content (Note - these are the libraries you wish to download):
+
+Flask==0.12
+requests>=2.7.0
+scikit-learn==0.19.1
+numpy==1.14.3
+pandas==0.22.0
+
+One option for creating the requirements file is to use
+
+pip freeze > requirements.txt
+
+This will list all libraries in your environment. Then you can go in to requirements.txt and remove un-needed ones.
+
+2) Execute command 
+mkdir wheelhouse && pip download -r requirements.txt -d wheelhouse
+to download libs and their dependencies to directory wheelhouse
+
+3) Copy requirements.txt into wheelhouse directory
+
+4) Archive wheelhouse into wheelhouse.tar.gz with 
+tar -zcf wheelhouse.tar.gz wheelhouse
+
+Then upload wheelhouse.tar.gz to your target machine:
+
+1) Execute tar -zxf wheelhouse.tar.gz to extract the files
+
+2) Execute below command, to install the libs and their dependencies 
+pip install -r wheelhouse/requirements.txt --no-index --find-links wheelhouse
+
+
+=================
+
+
+Even if the old python version has been removed, it is possible to use the pip of the current python version with the --path option to list all the modules installed in the previous version.
+
+For example, migrating all my user installed python modules from 3.7 to 3.8
+https://stackoverflow.com/questions/51308683/how-to-move-all-modules-to-new-version-of-python-from-3-6-to-3-7#59608886
+
+pip freeze --path ~/.local/lib/python3.7/site-packages > requirements.txt
+pip install --user -r requirements.txt
+Incidentally, I always use pip install with --user and leave the system wide installations to the package manager of my linux distro.
+
+It is safer to re-install all packages due to possible compatibility issues:
+
+pip3.6 list | awk '{print $1}' | xargs -I{} pip3.7 install {}
+
+
+
+
+https://stackoverflow.com/questions/11091623/how-to-install-packages-offline
+
+On the system that has access to internet
+The pip download command lets you download packages without installing them:
+
+pip download -r requirements.txt
+
+(In previous versions of pip, this was spelled pip install --download -r requirements.txt.)
+
+On the system that has no access to internet
+Then you can use
+
+pip install --no-index --find-links /path/to/download/dir/ -r requirements.txt
+
+to install those downloaded modules, without accessing the network.
+
+
+
+

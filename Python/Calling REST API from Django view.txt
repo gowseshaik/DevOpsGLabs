@@ -1,0 +1,18 @@
+Calling a REST API from django view
+=====================================
+
+import requests
+
+def my_django_view(request):
+    if request.method == 'POST':
+        r = requests.post('https://www.somedomain.com/some/url/save', params=request.POST)
+    else:
+        r = requests.get('https://www.somedomain.com/some/url/save', params=request.GET)
+    if r.status_code == 200:
+        return HttpResponse('Yay, it worked')
+    return HttpResponse('Could not save data')
+
+
+Yes of course there is. You could use urllib2.urlopen but I prefer requests.
+
+The requests library is a very simple API over the top of urllib3, everything you need to know about making a request using it can be found here.
