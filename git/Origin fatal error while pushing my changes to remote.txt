@@ -108,4 +108,15 @@ step3:
 $ git push origin final
 Success!
 
+=========
+git push -f origin
 
+If you want to avoid having to use -f, then you can use just
+
+git pull
+instead of
+
+git pull --rebase
+The non-rebase will fetch the changes from origin/dev and merge them into your FixForBug branch. Then, you will be able to run
+
+git push origin FixForBug
