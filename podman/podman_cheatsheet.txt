@@ -214,4 +214,72 @@ On the destination system:
 $ sudo podman container restore -i /tmp/checkpoint.tar.gz
 
 ====================
+podman --help | more
+podman image --help
+podman search ubi:latest | more
+podman pull registry.accesss.redhat.com/ubi8/ubi
+podman image list
+podman images
+podman inspect ubi | more
+podman image inspect ubi | more
+podman tag ubi:latest ubi8
+podman ps -a
+podman login localhost:5000
+username: registryuser
+password: 
+podman tag registry.access.redhat.com/ubi8/ubi:latest localhost:5000/ubi8/ubi
+podman images
+podman push localhost:5000/ubi8/ubi:latest
+curl -u registryuser https://localhost:5000/v2/_catalog
+podamn untag ubi8
+podman images
+podman rmi <imageID>
+podman image list
+podman logout localhost:5000
+===============
+skopeo
+
+skopeo --version
+skopeo --help | more
+skopeo inspect --help
+man skopeo
+podman pull registry.access.edhat.com/ubi7/ubi:latest
+skopeo login localhost:5000
+to copy one images from one repository to another:
+skopeo copy docker://registry.access.redhat.com/ubi7/ubi:latest docker://localhost:5000/ubi7/ubi:latest
+to sync one image from one source to another
+skopeo sync --src docker --dest docker --scoped registry.access.redhat.com/ubi7/ubi:latest localhost:5000/ubi7/ubi
+skopeo inspect docker://localhost:5000/ubi7/ubi:latest
+skopeo list-tags docker://localhost:5000/ubi8/ubi
+podman search localhost:5000/ubi
+skopeo logout localhost:5000
+
+podman ps -a
+sudo podman ps -a
+podman images
+podman search httpd-24 | more
+podman run -dt docker.io/centos/httpd-24-centos8
+podman ps -a
+podman images
+
+
+cat /etc/redhat-release
+podman ps -a
+podman exec -it relaxe_greider /bin/bash
+cat /etc/redhat-release
+curl http://localhost:8000
+curl http://localhost:8000
+podman ps -a
+podman stop relaxe_greider
+podman ps -a
+podman rm relaxe_greider
+podman ps -a
+podman rmi httpd-24-centos8:latest
+podman images
+
+
+
+==================
+http://www.dark-hamster.com/operating-system/how-to-setup-local-image-repository-with-podman-in-linux-centos-8/
+
 
