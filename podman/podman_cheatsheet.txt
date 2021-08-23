@@ -276,6 +276,312 @@ podman rm relaxe_greider
 podman ps -a
 podman rmi httpd-24-centos8:latest
 podman images
+podman system
+podman events
+podman healthcheck
+podman create
+podman exec
+podman kill
+podman pause/unpause
+podman run
+podman stop/start/restart
+podman container
+podman restart <containerID> ; podman ps -a
+podman create -t -name mynginx docker.io/library/nginx
+podman start mynginx
+sudo podman run -dt --name rootubi8 registry.access.redhat.com/ubi8
+sudo podman ps -a
+sudo podman puase rootubi8
+sudo podman unpause rootubi8
+podman container --help | more
+podman container start
+podman ps -a
+podman container start wizardly_elion
+podman exec -it myniginx /bin/bash
+sudo podman exec rootubi8 cat /etc/redhat-release
+podman stop -a
+podman rm -a
+podman ps -a
+sudo podman stop -a
+sudo podman rm -a
+sudo podman ps -a
+podman images
+podman rmi -a
+podman images
+sudo podman images
+sudo podman rmi -a
+sudo podman images
+
+Adding persistance storage using podman
+1. shared directory
+2. shared container volume
+podman run with -v
+podman volume
+podman cp
+
+1. using a shared directory
+podman ps -a
+mkdir ~/html
+echo Testfile! > ~/html/test1.txt
+cat ~/html/test1.txt
+podman search nginx
+lets create a 3 nginx containers
+podman run -dt --name web1 -v ~/html:/usr/share/nginx/html:z docker.io/library/nginx
+podman run -dt --name web2 -v ~/html:/usr/share/nginx/html:z docker.io/library/nginx
+podman run -dt --name web3 -v ~/html:/usr/share/nginx/html:z docker.io/library/nginx
+
+podman ps -a
+podman exec web1 curl -s http://localhost:80/test1.txt
+Testfile!
+podman exec web2 curl -s http://localhost:80/test1.txt
+Testfile!
+podman exec web3 curl -s http://localhost:80/test1.txt
+Testfile!
+
+lets create a Test2.txt
+cat ~/html/test2.txt
+echo A second testfile! > ~/html/test2.txt
+
+podman exec web1 curl -s http://localhost:80/test2.txt
+A second testfile!
+podman exec web2 curl -s http://localhost:80/test2.txt
+A second testfile!
+podman exec web3 curl -s http://localhost:80/test2.txt
+A second testfile!
+
+podman stop -a
+podman rm -a
+
+podman volume create webvol
+podman volume ls
+podman run -dt --name web1 -v webvol:/usr/share/nginx/html docker.io/library/nginx
+podman run -dt --name web2 -v webvol:/usr/share/nginx/html docker.io/library/nginx
+podman run -dt --name web2 -v webvol:/usr/share/nginx/html docker.io/library/nginx
+
+podman ps -a
+podman exec web1 ls -al /usr/share/nginx/html
+
+podman cp ~/html/test1.txt web1:/usr/share/nginx/html
+podman cp ~/html/test1.txt web2:/usr/share/nginx/html
+podman cp ~/html/test1.txt web3:/usr/share/nginx/html
+
+podman exec web1 ls -al /usr/share/nginx/html
+
+podman exec web1 curl -s http://localhost:80/test1.txt
+podman exec web2 curl -s http://localhost:80/test1.txt
+podman exec web3 curl -s http://localhost:80/test1.txt
+
+podman stop -a
+podman rm -a
+
+Managing Network Container
+
+attaching / dettaching networks
+# podman run -dt --name web1 -p 8080:80 nginx
+# podman port -a
+
+podman network
+podman port
+podman inspect
+
+podman run -dt --name web1 --publish-all nginx
+podman ps -a
+curl http://localhost:45773
+
+podman port -a
+podman run -dt --name web1 -p 8080:80 nginx
+podman run -dt --name web2 -p 8081:80 nginx
+podman ps -a
+curl http://localhost:8080
+curl http://localhost:8081
+podman stop -a
+podman rm -a
+podman rmi imageID
+
+sudo su -
+
+# podman network ls
+podman network inspect podman | more
+podman port -a
+podman inspect rootweb1 | grep IPAddress
+
+curl http://10.88.0.2
+
+podman network create test-net
+podman network ls
+podman network connect test-net rootweb1
+podman inspect rootweb1 | grep IPAddress
+curl http://10.89.0.2
+
+podman network disconnect test-net rootweb1
+podman network ls
+podman network rm test-net
+podman network ls
+
+Monitoring Containers using podman
+1. healthchecks
+
+- Command to be executed
+- no.of retries
+- Interval to run the healthcheck
+- start-period for the container
+- Timeout for the command
+
+- systemd timers(default)
+- cron(default)
+
+using
+- podman system
+- podman events
+
+podman run
+podman inspect
+podman healthcheck
+podman events
+podman system
+
+podman run -dt --name nginx1 --health-cmd 'curl http://localhost || exit 1' --health-interval=0 nginx
+podman ps -a
+podman healthcheck run nginx
+echo $?
+0
+echo $?
+1 --> if it is one, then there is an issue in healthcheck command(privious command).
+podman run -dt --name myubi7 --health-cmd 'grep 8 /etc/redhat-realese | exit1' --health-inteval=0 ubi7:latest
+podman healthcheck run myubi7
+echo $?
+unhealthy
+podman system --help
+podman system df
+podman system df -v
+podman system purne -a
+podman events --help
+podman events --since 10m
+podman events --since 15m --filter event=prune
+
+understanding pods
+
+whats a pod , how pod's will work
+A pod is a one or more containers with shared resources and a specification for how to run the containers. which will use in kubernetes.
+
+pod:
+shared port bindings, cgroup-parent values, and kernet namespaces
+once pod is created, these attributes cant be changed --must recreate the pod with changes.
+each container has its own instance of conmon
+Allows podman to run in detached mode.
+Holds the namespaces associated with the pod.
+Allows podman to connect other containers to the pod
+defualt infro container is based on the K8s.gcr.io/pause image
+Your regular containers with your applications 
+can communicate with other containers in the pod using shared network namespace.
+
+podman create
+podman rm
+podman prune
+podman commands to create destroy and clean up unused resources
+port are published at the pod level, not the container level
+say we want to deploy a pod with an nginx container, along with a mariadb container.
+- The mariadb container will not be accessed outside the pod.
+- The nginx container needs to be published to port 8081
+
+1. we deploy a pod, which contains all infra container. by default and 8081 on host and 80 on container.
+
+2. we deploy the nginx container.which will run on 80 port 
+
+create a first pod.
+wordpress pod
+	- place for our containers
+	- publish port 80 to 8080
+wordpress container
+	- Provides workpress application
+	- Application available via published port (8080:80)
+mariaDB container
+	- Database for wordpress
+	- Not available outside of pod
+
+podman pod
+podman run
+podman ps
+
+podman ps -a --pod
+podman pod ps
+
+podman pod create --name wp-pod -p 8080:80
+podman pod ps
+1.)
+podman ps -a --pod --> its a infra container
+2.)
+podman run -d --restart=always --pod=wp-pod -e MYSQL_ROOT_PASSWORD="dbpass" -e MYSQL_DATABASE="wp" -e MYSQL_USER="wordpress" -e MYSQL_PASSWORD="wppass" --name=wp-db mariadb
+3.)
+podman run -d --restart=alway --pod=wp-pod -e WORDPRESS_DB_NAME="wp" -e WORDPRESS_DB_USER="wordpress" -e WORDPRESS_DB_PASSWORD="wppass" -e WORDPRESS_DB_HOST="127.0.0.1" --name wb-web wordpress
+
+podman ps -a --pod
+curl -s http://localhost:8080
+echo $?
+0
+
+Managing pods using podman
+
+- managing rootless pods
+- managing rootfull pods
+
+podman pod
+podman ps
+
+rootless pods:
+podman pod ps
+podman ps -a --pod
+podman pod stop wp-pod
+podman pod start wp-pod
+podman ps -a --pod
+podman pod restart wp-pod
+podman ps -a --pod
+podman pod inspect wp-pod | more
+podman pod top wp-pd
+
+rootfull pods:
+sudo -i
+podman pod create --name root-pod -p 8081:80
+podman pod ps
+podman ps -a --pod
+podman run -d --restart=always --pod=root-pod -e MYSQL_ROOT_PASSWORD="dbpass" -e MYSQL_DATABSE="rootdb" -e MYSQL_PASSORD="dbapass" --name=root-db mariadb
+
+podman run -d --restart=always --pod=root-pod --name root-web nginx
+
+podman ps -a --pod
+
+curl -s http://localhost:8081
+podman pod pause root-pod
+podman ps -a --pod
+podman pod ps
+podman pod unpause root-pod
+podman ps -a --pod
+podman pod stats root-pod
+podman pod stop root-pod
+podman system df
+podman pod prune
+podman system df
+podman ps -a --pod
+podman pod ps
+exit
+
+podman ps -a --pod
+podman pod ps
+podman pod stop wp-pod
+podman pod ps -a
+podman pod rm wp-pod
+podman pod ps
+podman system prune -a
+podman system df
+
+Creating Containers Images using Buildah:
+
+
+
+
+
+
+
 
 
 
