@@ -576,6 +576,564 @@ podman system df
 
 Creating Containers Images using Buildah:
 
+ways to build with Buildah
+
+1. Build using Dockerfile - bud
+	- Allows us to use a Dockerfile to define container images
+	- docker compatibility
+	- Great for Docker users
+
+2. Buildah Native Commands
+	- frees us from Dockerfiles
+	- Can incorporate into bash script or other automation
+
+What's a Dockerfile
+
+A Dockerfile is a file that contains a set of instructions to build a container image
+
+- Docker can build images automatically by reading the instructions from a Dockerfile.
+- A Dockerfile is a text document that contains all the commands a user could call on the command line to assemble an image.
+- Using docker build, users can create an automated build that executes serveral command line instructions in succession.
+
+Anantomy of a Dockerfile
+
+FROM Fedora:latest			# source Image and Label
+LABEL maintainer gowseshaik@gmail.com
+
+RUN dnf install -y httpd && dnf clean all 		# Install Software and Clean UP
+
+
+RUN echo "Test File 1" > /var/www/html/test1.txt
+RUN echo "Test File 2" > /var/www/html/test2.txt
+RUN echo "Test File 3" > /var/www/html/test3.txt 		#Create Test Text Files
+RUN echo "Test File 4" > /var/www/html/test4.txt
+
+EXPOSE 80			# Expose Port 80 
+CMD mkdir /run/httpd; /usr/sbin/httpd -D FOREGROUND   #Run our httpd service
+
+
+
+Okay, Building an Images using Buildah Native commands
+Now that we've covered how dockerfiles work, Let's take a look at what building the same container images looks like using Buildah native commands...
+
+
+Buildah Native Commands:
+
+container=$(buildah from fedora:latest) 		# create our container and set Label
+buildah config --label maintainer="buildah@podman.rulez" $container
+
+
+buildah run $container dnf install -y httpd		# install software and Clean up
+buildah run $container dnf clean all
+
+
+buildah run $container bash -c "echo \"Test File 1\" > /var/www/html/test1.txt"
+buildah run $container bash -c "echo \"Test File 2\" > /var/www/html/test2.txt"		# create test files inside a container of /var/www/html path
+buildah run $container bash -c "echo \"Test File 3\" > /var/www/html/test3.txt"
+buildah run $container bash -c "echo \"Test File 4\" > /var/www/html/test4.txt"
+
+buildah config --port 80 $container			# expose port 80, Run our httpd service and commit container image
+buildah config --cmd "/usr/sbin/httpd -D FOREGROUND" $container
+buildah commit --format docker $container my-fedora-httpd:latest
+
+Managing container Images with Buildah, we will not use buildah images in production.
+ - Content Management
+ - Image management
+ - container management
+ - filesystem management
+
+ buildah -h or --help
+
+buildah images
+buildah containers
+buildah bud
+buildah rmi
+podman run
+podman ps
+podamn sotp 
+podman rm
+
+
+podman ps -a
+buildah images
+buildah containers
+vi Dockerfile
+FROM fedora:latest
+LABEL maintainer fedora-container <apache@podman.rulez>
+
+
+RUN dnf install -y httpd & dnf clean all
+
+RUN echo "Test File 1" > /var/www/html/test1.txt
+RUN echo "Test File 2" > /var/www/html/test2.txt
+RUN echo "Test File 3" > /var/www/html/test3.txt 		
+RUN echo "Test File 4" > /var/www/html/test4.txt
+
+EXPOSE 80		# Expose Port 80 to access outside of the container 
+CMD mkdir /run/httpd; /usr/sbin/httpd -D FOREGROUMD
+
+
+buildah bud -t my-fedora-httpd:latest .
+buildah images
+buildah containers
+
+podman run -d --name my-fedora-httpd -p 8081:80 localhost/my-fedora-httpd
+
+podman run -d --name my-fedora-httpd -p 8082:80 localhost/my-fedora-httpd
+podman run -d --name my-fedora-httpd -p 8083:80 localhost/my-fedora-httpd
+podman run -d --name my-fedora-httpd -p 8084:80 localhost/my-fedora-httpd
+
+podamn ps -a
+curl -s httpd://localhost:8081/test1.txt
+curl -s httpd://localhost:8082/test2.txt
+curl -s httpd://localhost:8083/test3.txt
+curl -s httpd://localhost:8084/test4.txt
+
+podman stop -a
+podman rm -a
+buildah rmi -a
+podman ps -a
+buildah images
+
+creating a custom container images using Buildah Native commands
+
+- buildah images
+- buildah containers
+- buildah from
+- buildah config
+- buildah run
+- buildah commit
+- buildah rmi
+- podamn ps
+- podman run/stop
+- podman rm
+
+
+container=$(buildah from fedora:latest) 
+
+buildah containers
+echo $container
+
+buildah config --label maintainer="buildah@podman.rulez" $container
+
+
+buildah run $container dnf install -y httpd		
+buildah run $container dnf clean all
+
+
+buildah run $container bash -c "echo \"Test File 1\" > /var/www/html/test1.txt"
+buildah run $container bash -c "echo \"Test File 2\" > /var/www/html/test2.txt"	
+buildah run $container bash -c "echo \"Test File 3\" > /var/www/html/test3.txt"
+buildah run $container bash -c "echo \"Test File 4\" > /var/www/html/test4.txt"
+
+buildah config --port 80 $container			
+buildah config --cmd "/usr/sbin/httpd -D FOREGROUND" $container
+buildah commit --format docker $container my-fedora-httpd:latest
+
+buildah images
+buildah containers
+
+podman run -d --name my-fedora-httpd-1 -p 8081:80 localhost/my-fedora-httpd
+podman run -d --name my-fedora-httpd-2 -p 8082:80 localhost/my-fedora-httpd
+podman run -d --name my-fedora-httpd-3 -p 8083:80 localhost/my-fedora-httpd
+podman run -d --name my-fedora-httpd-4 -p 8084:80 localhost/my-fedora-httpd
+
+podamn ps -a
+
+curl -s http://localhost:8081/test1.txt
+curl -s http://localhost:8082/test2.txt
+curl -s http://localhost:8083/test3.txt
+curl -s http://localhost:8084/test4.txt
+
+podman stop -a
+podman rm -a
+buildah rmi -a
+buildah rm fedora-working-container
+buildah rmi -a
+podman ps -a
+buildah containers
+
+Managing contianer Images
+ - Content Management
+ - Image management
+ - container management
+ - filesystem management
+commands:
+- buildah help/info/inspect/version
+- buildah add/copy
+- buildah images/login/logout
+- buildah pull/push/rmi/tag
+- buildah containers/rename/rm
+- buildah mount/unmount
+
+buildah help | more
+buildah help --help
+man buildah
+buildah info | more
+buildah images
+buildah inspect localhost/my-fedora-httpd | more
+buildah version
+
+mkdir ~/testfiles
+for i in `seq 1 5` ; do echo "Add Test File "$i > ~/txtfiles/add$i.txt; echo "copy Test file "$i > ~/testfiles/copy$i.txt; done
+ls -al ~/testfiles/
+
+cat ~/testfiles/*
+
+we need to create a intermediate container first.
+
+container=$(buildah from fedora:latest)
+echo $container
+buildah containers
+
+buildah add $container 'testfiles/add*.txt' '/var/www/html/'
+buildah copy $container 'testfiles/copy*.txt' '/var/www/html/'
+
+lets checkout our file system management for our results
+buildah unshare
+# buildah mount fedora-working-container
+
+copy the above mount point
+# ls -ltr /home/cloud-user/.local/share/containers/storage/overlay/....../merged/var/www/html
+
+# buildah umount fedora-working-container
+# exit
+now you're backinto rooless mode.
+$ buildah images
+$ buildah login https://localhost:5000
+username: clouse_user
+$ buildah push localhost/my-fedora-httpd:lates docker://localhost:5000/my-fedora-httpd:latest
+
+curl -u clouse_user:registry https://localhost:5000/v2/_catalog
+
+buildah images
+buildah rmi localhost/my-fedora-httpd:latest
+buildah images
+buildah pull docker://localhost:5000/my-fedora-httpd:latest
+buildah images
+buildah logout https://localhost:5000
+
+buildah containers
+buildah rename fedora-working-container my-container
+buildah rm my-container
+buildah containers
+
+
+=========
+podman and Kubernetes interoperability
+with yaml files
+
+Kubernetes is a portable, extensible, open-source platform for managing containerzed workloads and services, that facilitates both declarative configuration and automation. It has a large, rapidly growing echosystem. Kubernetes services, support, and tools are widely available.
+
+kubernetes
+	- minikube, Microk8s
+Openshift (which is now based on kubernetes)
+Cloud (GCP, AWS, Azure, etc.)
+
+podman: is for developing and running local container images
+Kubernetes: is an ecosystem for running containerized workloads
+
+generating a kubernetes YAML file using podman.
+one or more pod's to yaml file
+# podman generate kube wp-pod -f wp-pod.yml
+
+Running a kubernetes YAML file using Podman
+# podman play kube test-pod.yml
+
+how it works:
+
+1.) Step1
+	- Create podman pod/containers
+	$ podman pod create
+	$ podman pod ps
+	$ podman run
+
+2.) Step2
+	- Generate YAML File using Podman 
+	$ podman Generate kube
+	$ podman pod
+	$ podman run
+	$ podman ps
+
+3.) Step3
+	- Run Our YAML File using Podman
+	$ podman play kube
+	$ podman pod
+	$ podman ps
+
+3.) Step3
+	- Run our YAML File using Kubernetes
+	$ microk8s kubectl get pod
+	$ microk8s kubectl create
+	$ microk8s kubectl describe pod
+	$ microk8s kubectl delete pods
+
+1. creating a nginx pod using podman
+2. converting our pod to a kubernetes YAML file
+
+podman generate kube
+podman pod
+podman run
+podman ps
+
+we need to create a nginx pod for our kubernetes evnironment. Since we're already familiar with how to stand up a pod using podman, we're going to use podman to create both the pod and generate the YAML file. Can it be that easy?
+
+podman pod ps 
+podman ps -a --pod
+podman pod create --name test-pod -p 8080:80
+
+podman run -d --restart=always --pod=test-pod --name test-nginx nginx
+
+podman pod ps
+
+podman ps -a --pod
+curl -s http://localhost:8080
+
+- generate kubenetes YAML file
+podman generate kube --help
+
+podman pod ps
+podman ps -a --pod
+
+podman generate kube test-pod -f test-pod.yml
+more test-pod.yml
+
+grep test- test-pod.yml | grep name | uniq
+
+
+podman run -d --restart=alway --pod=test-pod --name=test-ubi8 ubi8
+podman pod ps
+podman ps -a --pod
+podman generate kube test-pod -f test-pod2.yml
+grep test- test-pod.yml | grep name | uniq
+
+
+- Running a Pod from a podman generated kubernetes YAML file using podman
+
+
+
+- podman play kube
+- podman pod
+- podman ps
+
+podman ps -a --pod
+podman pod ps
+we make sure , we dont have containers
+
+grep test- test-pod.yml | grep name | uniq
+
+
+podman play kube test-pod.yml
+
+podman pod ps
+podman ps -a --pod
+curl -s httpd://localhost:8080
+
+Running a pod  from a podman-generated kubernetes YAML file using kubernetes
+
+- microk8s kubectl get pod
+- microk8s kubectl create
+- microk8s kubectl describe pod
+- microk8s kubectl delete pods
+
+microk8s kubectl get pod
+microk8s kubectl create -f test-pod.yml
+microk8s kubectl get pod
+microk8s kubectl describe pod test-pod | more
+microk8s kubectl get pod
+
+curl -s http://localhost:8080
+
+goto browser: http://dns-name:8080
+
+microk8s kubectl delete pods --all
+
+microk8s kubectl get pod
+
+===================
+using podman to create systemd containers and pods
+
+what's systemd
+is a Anatomy of a Unit file , where and how to run of your services 
+[Unit]section
+[service]section
+[Install]section
+
+using systemd to manage podman containers and pods
+- start your pod and /or container(s)
+- Use podman generate systemd
+- Enable and start your systemd pod/container
+- configure persistence, if desired
+
+configuring persistent systemd containers and pods
+
+Our WordPress Pod
+
+- Wordpress pod
+	- A Place for our containers
+	- Publish port 80 to 8080
+
+- WordPress container
+	- Provides our wordpress application
+	- Application available via published port (8080:80)
+
+- MariaDB Container
+	- A database for wordpress
+	- Not available outside of pod
+
+podman pod create ....
+podman run -d -name ....
+	Launch a new pod/containers to use a model to generate the systemd unit files
+
+podman generate systemd
+	Generate systemd unit files from your pod. 
+	Must delete existing pod/contianers, as systemd will create new ones
+
+podman pod stop|rm -a
+ 	Get rid of the pod/containers you created before you try to start your systemd container
+
+
+systemd commands:
+	loginctl enable-linger
+	loginctl desable-linger
+	loginctl show-user <username>
+	systemctl --user daemon-relaod
+	systemctl --user start|stop|enable UNIT
+	Unit files: ~/.config/systemd/user/
+
+
+How it's done:
+
+1.) Step1
+	start our wordPress Pod
+		- podman pod create
+		- podman pod ps
+		- podman ps -a --pod
+		- podman run
+2.) Step2
+	Generate systemd unit files
+		- podman generate systemd
+		- podman pod stop
+		- podman pod rm
+		- podman pod ps
+		- podman ps -a --pod
+3.) Step3
+	Enable/start your systemd pod
+		- systemctl --user daemon-reload
+		- systemctl --user enable
+		- system --user status
+		- podman ps -a --pod
+		- podman pod ps
+4.) Step4
+	Configure Persistence
+		- loginctl enable-linger
+		- loginctl show-user
+		- podman ps -a --pod
+		- podman pod ps
+
+
+- podman generate systemd
+- podman ps
+- podman pod ps
+- podman pod create
+- podman pod stop
+- podman pod run 
+- podman run
+- systemctl --user
+- loginctl
+
+podman ps -a --pod
+podman pod ps
+
+#Infra container
+podman pod create --name wp-pod -p 8080:80
+
+# WP DB container:
+=====================
+podman run -d --restart=always --pod=wp-pod  -e MYSQL_ROOT_PASSWORD="dbpass" -e MYSQL_DATABASE="wp" -e MYSQL_USER="wordpress" -e MYSQL_PASSWORD="wppass" --name=wp-db mariadb
+
+#WordPress container:
+=====================
+podman run -d --restart=always --pod=wp-pod -e WORDPRESS_DB_NAME="wp" -e WORDPRESS_DB_USER=wordpress" -e WORDPRESS_DB_PASSWORD="wppass" -e WORDPRESS_DB_HOST="127.0.01" --name wp-web wordpress
+
+podman ps -a --pod
+podman pod ps
+curl -s http://localhost:8080
+echo $?
+0
+
+mkdir ~/.config/systemd/user
+cd ~/.config/systemd/user
+pwd
+podman generate systemd --files --new --name wp-pod
+ls -ltr
+you should see 2 files
+ - pod-wp-pod.service
+ - contianer-wp-web.service
+ - container-wp-db.service
+
+more *.service
+
+
+podman pod stop -a
+podman pod rm -a
+podman ps -a --pod
+
+
+systemctl --user daemon-reload
+systemctl --user enable --now pod-wp-pod
+systemctl --user status pod-wp-pod
+
+podman ps -a --pod
+podman pod ps
+curl -s http://localhost:8080
+echo $?
+0
+
+loginctl show-user cloud_user | grep -i linger
+Linger=no
+loginctl enable-linger 
+loginctl show-user cloud-user | grep -i linger
+Linger=yes
+reboot your system
+podman ps -a --pod
+podman pod ps
+curl -s http://localhost:8080
+
+=================
+
+Introduction to Cockpit
+
+What is cockpit
+	- Cockpit is an easy-to-user server management interface
+	" the easy-to-user, integrated, glanceable, and open web-based interface for your servers."
+
+Why Cockpit
+	cockpit brings server management to the masses.
+
+1.) Step1
+- Installing Cockpit and podman plugin
+	- yum install 
+	- yum module install
+	- systemctl enable --now
+2.) Step2
+- Dowload containers Images
+- Creating a WordPress instance
+3.) Step3
+- Run WordPress Container Instance
+4.) Step4
+- Testing a WordPress Intance
+- Cleaning up
+
+sudo yum -y module install container-tools
+sudo yum -y install cockpit
+
+sudo systemctl enable --now cockpit.socket
+
+=
+
+
+
 
 
 
