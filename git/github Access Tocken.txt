@@ -1,0 +1,20 @@
+
+Updates from github:
+error:
+======
+Github Has Revoked the support for password authentication on 13 Aug 2021 and giving the below mentioned response:
+
+Support for password authentication was removed on August 13, 2021
+
+
+solution:
+=========
+In order to fix the issue follow the below steps:
+
+Goto settings of Github account
+Find and Select Developer Settings
+Find and Select Personal access tokens
+Generate a new token
+Fill in any note and select the access scopes
+once done click on generate token
+Use the generated token in place of a password to communicate with GitHub.
