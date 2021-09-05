@@ -229,3 +229,22 @@ git remote add origin git@github.com:gowseshaik/DevOpsGLabs.git
 git branch -M main
 git push -u origin main
 
+===================
+git push -u origin manin is not working 
+
+ gouse  …  Flask  AdminDashboards  flask-admin  git push -u origin main                                           128   main 
+Username for 'https://github.com': gowseshaik
+Password for 'https://gowseshaik@github.com': 
+To https://github.com/gowseshaik/Pyflaskbootstrap.git
+ ! [rejected]        main -> main (non-fast-forward)
+error: failed to push some refs to 'https://github.com/gowseshaik/Pyflaskbootstrap.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Integrate the remote changes (e.g.
+hint: 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+
+solution: "-f"
+With the -f tag you will override the remote branch code with your code.
+
+git push -f origin manin

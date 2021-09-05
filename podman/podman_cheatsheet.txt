@@ -1,5 +1,64 @@
 https://podman.io/getting-started
 
+podman info
+
+gouse  ~  ls -ltr /etc/containers/
+total 36
+-rw-r--r-- 1 root root  256 Jul  6 22:33 policy.json
+-rw-r--r-- 1 root root 4679 Jul 30 03:13 registries.conf
+-rw-r--r-- 1 root root 7886 Aug  6 23:15 storage.conf
+-rw-r--r-- 1 root root 7914 Aug 26 16:51 storage.conf.dpkg-dist
+drwxr-xr-x 2 root root 4096 Aug 27 22:48 registries.conf.d
+drwxr-xr-x 2 root root 4096 Aug 27 22:48 registries.d
+ gouse  ~  
+
+
+registries config file : /etc/containers/registries.conf
+Configuration files include "storage.conf" (for configuring storage) 
+and "containers.conf" (for a variety of container settings). 
+You could also create a "registries.conf" file to identify container registries that are available when you use
+Podman to pull, search, or run images.
+
+How to create a local registry:
+===============================
+The first thing you must do is define your local registry. To do that, you must first create a directory to house container data with the command:
+
+sudo mkdir -p /var/lib/registry
+sudo mkdir -p /data/containers/storage/registry
+Next, we need to deploy the local registry with the command:
+
+sudo podman run --privileged -d --name registry -p 5000:5000 -v /var/lib/registry:/var/lib/registry --restart=always registry:2
+sudo podman run --privileged -d --name registry -p 5000:5000 -v /data/containers/storage/registry:/var/lib/registry --restart=always registry:2
+Now we need to define the insecure registry. To do that, open the necessary configuration file with the command:
+
+sudo nano /etc/containers/registries.conf
+In that file, look for the [registries.insecure] block. In that section you'll see the line:
+
+registries = []
+Change the above line to:
+
+registries = ['localhost:5000']
+Save and close the file. Restart Podman with the command:
+
+sudo systemctl restart podman
+How to push an image to the local registry
+Now that your local registry is up and running, it's time to push an image to it. For testing, we're going to pull down the hello-world image from the official docker.io repository and then push it to our new local repository. 
+
+First, pull down the hello-world image with the command:
+
+$ podman pull hello-world
+After that pull completes, you'll then need to tag the image such that it can be pushed to the local repository. Tag the image with the command:
+
+$ podman tag docker.io/library/hello-world localhost:5000/hello-world
+Now that our image has been tagged, we can then push it to the local repository with the command:
+
+$ podman push localhost:5000/hello-world
+To ensure your image was pushed to the local repository, issue the command:
+
+$ podman images
+You should see the hello-world image listed in localhost:5000 (Figure A).
+
+
 
 Finding Images:
 ===============
@@ -12,6 +71,7 @@ podman search searchString	Search local cache and remote registries for images
 podman logout	Log out of the current remote registry
 The list of registries is defined in /etc/containers/registries.conf
 
+
 Building Images:
 ================
 Command	Description
@@ -21,6 +81,10 @@ podman build -t image:tag -f Dockerfile2	Same as above, but with a di?erent Dock
 podman tag image:tag image:tag2	Add an additional name to a local image
 podman tag image:tag registry/username/image:tag	Same as above, but the additional name includes a remote registry
 podman push registry/username/image:tag	Push an image to a remote registry
+
+$ sudo podman image exists docker.io/library/alpine:latest
+$ echo $?
+0
 
 
 Running Containers on Images:
@@ -64,14 +128,51 @@ podman port container	List the port mappings from a container to localhost
 
 Working with the Container Filesystem:
 ======================================
-Command	Description
-podman diff container	Display all the changes to a container’s ?lesystem
-podman cp source target	Copy ?les and folders between a container and localhost
-podman mount container / podman umount container	Mount or unmount a container’s root ?lesystem
-podman import tarball	Import a tarball and save it as a ?lesystem image
-podman export [-o outputFile] container	Export the container’s ?lesystem to a tar ?le
+
+Display all the changes to a container’s filesystem
+podman diff container	
+
+Copy files and folders between a container and localhost
+podman cp source target	
+
+Mount or unmount a container’s root filesystem
+podman mount container / podman umount container
+	
+Import a tarball and save it as a filesystem image
+podman import tarball	
+
+Export the container’s filesystem to a tar file
+podman export [-o outputFile] container	
+	$ podman export -o redis-container.tar 883504668ec465463bc0fe7e63d53154ac3b696ea8d7b233748918664ea90e57
+	$ podman export 883504668ec465463bc0fe7e63d53154ac3b696ea8d7b233748918664ea90e57 > redis-container.tar
+	$ podman save -o redis-container.tar --format docker-archive <image>
+	$ podman export -o sblsrvr.tar 60f229da5393  
+podman import from tar file                                                                                                                                                  
+	$ podman import sblsrvr.tar
+	$ podman import http://example.com/ctr.tar url-image
+  	$ cat ctr.tar | podman -q import --message "importing the ctr.tar tarball" - image-imported
+  	$ cat ctr.tar | podman import -
+  	
+podman tag to an image
+	$ podman tag 0e3bbc2 fedora:latest
+	$ podman tag httpd myregistryhost:5000/fedora/httpd:v2
+	$ podman tag f8e347b9a7b2 sblsrvr:v1
+	
+	
 podman save [-o archiveFile]--format docker-archive	oci-archive
-podman load -i archiveFile	Load a saved image from docker-archive or another format
+
+Load a saved image from docker-archive or another format
+podman load -i archiveFile	
+	$ podman load --quiet -i fedora.tar
+	$ podman load -q -i fedora.tar
+	$ podman load < fedora.tar
+
+$ podman save --quiet -o alpine.tar alpine:2.6
+$ podman save > alpine-all.tar alpine
+$ podman save -o oci-alpine.tar --format oci-archive alpine
+$ podman save --compress --format oci-dir -o alp-dir alpine
+
+
 
 Removing Images:
 ================
@@ -538,6 +639,20 @@ podman pod restart wp-pod
 podman ps -a --pod
 podman pod inspect wp-pod | more
 podman pod top wp-pd
+
+
+4.7. Creating Pods
+The pod create command creates a pod.  The create command supports different options.
+
+$ podman pod create
+The pod create command creates a pod with an infra container by default associated with it unless explicitly set with infra flag as false.
+
+$ podman pod create --infra = false
+Infra container allows Podman to connect various containers in the pod.
+
+The pod list command displays all the available pods
+$ podman pod list
+
 
 rootfull pods:
 sudo -i
