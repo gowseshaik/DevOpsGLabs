@@ -1,0 +1,10 @@
+My preferred branching workflow
+I like to use a branching workflow like this:
+
+Create a feature branch off master
+Build the feature
+Create a PR for that branch
+Merge and deploy
+Delete the feature branch
+That’s it! No need for a “branching model” that takes a lengthy blog post to explain. Just make a branch, merge the branch, then delete the branch. It’s very similar to GitHub’s Git workflow.
+https://guides.github.com/introduction/flow/
