@@ -1,0 +1,98 @@
+Gitlab CE installation steps on Ubuntu
+======================================
+$ sudo apt update
+
+Make sure you have installed OpenSSH server:
+$ sudo apt install -y openssh-server
+
+Install GitLab CE
+Add the GitLab CE package repository:
+$ wget -qO - https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash
+
+Install the GitLab CE:
+$ sudo apt install -y gitlab-ce
+
+When installation is completed, we can check GitLab CE version:
+grep gitlab /opt/gitlab/version-manifest.txt
+
+Now we need to set URL which will be used to access GitLab instance. It can be done in configuration file:
+ip addr --: get your local ip or external ip
+$ sudo vi /etc/gitlab/gitlab.rb
+Find external_url parameter and set IP address or hostname of your machine. Default port is 80, but you can explicitly set if needed.
+external_url 'http://192.168.0.188:9000'
+
+To make changes to take effect, reconfigure the GitLab:
+$ sudo gitlab-ctl reconfigure
+
+When it finished, we can check the status of GitLab services:
+$ sudo gitlab-ctl status
+
+We can also stop, start and restart the GitLab services:
+$ sudo gitlab-ctl stop
+$ sudo gitlab-ctl start
+$ sudo gitlab-ctl restart
+
+Testing GitLab CE
+By default, random password is generated during installation. Password can be found in the following file:
+
+sudo cat /etc/gitlab/initial_root_password
+Now open the browser and enter IP address or hostname to access the GitLab web interface. Use username root and password from a file to login.
+
+http://34.125.44.230:9000
+http://34.125.44.230:9000/users/sign_in
+
+===================
+Install GitLab Runner on Ubuntu 20.04
+
+GitLab CI/CD is a part of GitLab for applications development using continuous integration (CI) and continuous delivery (CD) techniques. GitLab Runner is a tool for running jobs in a pipeline. GitLab Runner works with GitLab CI/CD.
+
+This tutorial demonstrates how to install GitLab Runner on Ubuntu 20.04.
+
+Prepare environment
+Before starting, make sure you have installed GitLab CE on your system.
+
+Install GitLab Runner
+Add the GitLab Runner repository:
+$ wget -qO - https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | sudo bash
+
+Install the GitLab Runner:
+sudo apt install -y gitlab-runner
+
+When the installation is finished, we can check version of GitLab Runner:
+gitlab-runner --version
+
+Register runner
+GitLab Runner supports various executors to run jobs in a pipeline. It is possible use of Docker executor. Before registering a runner, make sure you have installed Docker CE on your system.
+
+GitLab Runner can be registered as shared runner or project-specific runner. A shared runner can run jobs for all projects. A specific runner can run jobs for the specified project. Before registration, we need to get token:
+
+For a shared runner, login to GitLab website with administrator account and go to Admin Area. Click “Overview” and then “Runners”.
+
+<GITLAB_URL>/admin/runners
+
+For a project-specific runner, login to GitLab website and go to project page. Click “Settings” and then “CI/CD”. Expand the Runners section.
+
+<GITLAB_URL>/<USER_OR_GROUP>/<PROJECT_SLUG>/-/settings/ci_cd
+
+GitLab Runner can be registered using the following command:
+$ sudo gitlab-runner register \
+  --non-interactive \
+  --url "GITLAB_URL" \
+  --registration-token "REGISTRATION_TOKEN" \
+  --description "docker-runner" \
+  --executor "docker" \
+  --docker-image ubuntu:latest
+
+$ sudo gitlab-runner register \
+  --non-interactive \
+  --url "http://34.125.44.230:9000/" \
+  --registration-token "ZsfeJDibzxSCp4fwyjp4" \
+  --description "docker-runner" \
+  --executor "docker" \
+  --docker-image ubuntu:latest
+  
+
+Provide GitLab instance URL and registration token. In our case, we chosen ubuntu:latest as default image to be used for projects.
+
+For more info, Please refer: https://docs.gitlab.com/
+
