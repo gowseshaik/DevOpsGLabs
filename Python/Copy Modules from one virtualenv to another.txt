@@ -1,0 +1,89 @@
+how to copy modules from one virtualenv to another
+Posted by: admin December 20, 2017 Leave a comment
+
+Questions:
+Is it possibe to copy python modules from one virtualenv to another.If so how is this done?
+
+Answers:
+As long as you’re moving them from one virtualenv to another on the same machine, you could easily just do:
+
+$ cp -r [env1]/lib/pythonX.X/site-packages/* [env2]/lib/pythonX.X/site-packages/
+However, if the environments are on different machines or utilizing different versions of python or some other major difference, it’s probably not a good idea. In general it’s much safer to generate a
+requirements.txt
+, and then use that to load up all the same modules in the other environment. You can create the file manually if you like, but it’s easier to just use
+pip
+.
+
+$ pip freeze -E [env1] > requirements.txt
+Or, if your virtualenv is activated already, you can simply do:
+
+$ pip freeze > requirements.txt
+Then, in your other environment, you can do:
+
+$ pip install -E [env2] -r /path/to/requirements.txt
+Answers:
+I am working on a 64bit machine with Ubuntu-14.04-64. I compiled and installed python-3.4.3 to /opt/python3.4/ and created a vitualenv based on this python.
+
+mkvirtualenv -p /opt/python3.4/bin/python venv1
+Also for ease:
+
+sudo apt-get install virtualenvwrapper
+With the venv installed and working with PyQt5 successfully (the hard bit) plus numpy, scipy, ipython etc.
+I installed virtualenv-clone:
+
+workon myvenv
+pip install virtual-clone
+deactivate
+and then ran:
+
+virtualenv-clone venv1 venv2
+PyQt5 works this way. The command-line prompt still names venv1 as active but within ~/.virtualenv/venv2
+
+cat activate* | grep "venv1"
+shows 3 entries within the three files activate, activate.csh, and activate.fish
+
+In activate, change
+
+if [ "x(myvenv1) " != x ] ; then
+        PS1="(myvenv1) $PS1"
+else
+to
+
+...
+        PS1="(myvenv2) $PS1"
+...
+In activate.csh change
+
+if ("venv1" != "") then
+        set env_name = "venv1"
+else
+to
+
+...
+    set env_name = "venv2"
+...
+In activate.fish change
+
+if test -n "(venv1) "
+        printf "%s%s%s" "(venv1) " (set_color normal) (_old_fish_prompt)
+        return
+end
+to
+
+...
+    printf "%s%s%s" "(venv2) " (set_color normal) (_old_fish_prompt)
+...
+Now when you
+source ~/.virtualenv/venv2/bin/activate
+or
+workon venv2
+the command prompt will correctly display your environment (the cloned copy of venv1).
+
+Edit: this doesn’t answer the question “How to copy modules from one virtualenv to another” but I’m pretty sure the result is in many cases the desired one, namely the creation of a new venv based on a previously created one which includes (all of) the previously installed modules.
+
+Answers:
+Usually you are able to copy the .egg-info from the lib/site-packages folder of the virtualenv to the lib/site-packages of the other environment.
+
+Answers:
+seems like we can’t just copy one virtualenv as another one.
+even you chnage the $VIRTUAL_ENV in the activate file, it still act as in origin virtualenv and pip will install all the packages to origin site-packages/

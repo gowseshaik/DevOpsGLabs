@@ -1,0 +1,253 @@
+OCI: Open Container Initiatives
+
+install docker or podman
+There are many tools for work with images
+
+skopeo --version
+skopeo copy --help
+skopeo is one of the tool to copy images from one registry to other registry
+$ skopeo copy docker://docker.io/alpine:latest docker-daemon:docker.io/alpine:latest
+docker image will be stored in below path
+ls -ltr /var/lib/docker
+and images will be found in image dir
+
+To archive your docker image with skopeo
+$ skopeo copy docker-daemon:docker.io/alpine:latest docker-archive:docker-io-alpine-latest.tar.gz
+
+$ ls 
+docker-io-alpine-latest.tar.gz
+
+tar -xvf docker-io-alpine-latest.tar.gz
+xxxxxxxxxxxxxxxx.tar
+xxxxxxxxxxxxxxxx.json
+xxxxxxxxxxxxxxxx/layer.tar
+xxxxxxxxxxxxxxxx/VERSION
+xxxxxxxxxxxxxxxx/json
+manifest.json
+repositories
+
+Like cat command, bat often works out-of-the-box on Linux or Unix. No extra configuration needed. So all you have to do is type:
+batcat filename
+bat filename
+
+bat manifest.json
+
+the main file is called manifest.json
+it defines, which layers
+
+cat xxxxxxxxxxxxxxx.json | jq
+
+lests see, how the OCI is structured
+
+$ skopeo copy docker://docker.io/httpd:2.4.48 oci:httpd:2.4.48
+$ skopeo copy docker://docker.io/httpd:2.4.47 oci:httpd:2.4.47
+
+cat index.json|jq| bat
+cd blobs
+cd sha256
+ls
+xxxxxxxx
+xxxxxxxx
+xxxxxxxx
+....
+xxxxxxxx
+cat xxxxx | jq | bat
+cat xxxxx | sha256sum
+usr/local/apache2/.wh..wh..opq
+.wh are the whiteouts files
+- A  Whiteout file is an empty file with a special filename that signifies a path should be deleted.
+for more please refer: oci documentation
+https://github/opencontainers/image-spec/blob/main/layer.md#whiteouts
+
+opaque whiteout
+.wh..wh..opq is opaque whiteout files, addintion to exressing that a single entry should be removed from a lower layer, layers may remove all of the children using an opaque whiteout entry.
+an opaque whiteout entry is a file whith the name .wh..wh..opq indicating that all siblings are hidden in the lower layer
+
+here container image fs structured.
+
+image-spec ( this is how the container images are build)
+==========
+index file:
+	image manifest (tag :latest) -->3974rt89g243
+		1. image config (defines how to run the image) --> 646yawu43f462
+		2. image layers (.tar archives) --> 34dgs5456a
+		
+Container Bundles:
+==================
+Bundle: Filesystem + Config file
+
+types of bundles:
+	Container bundle
+	Filesystem bundle
+	Runtime bundle
+
+Config file : its all for runtime-spec
+	it consists of 
+	-e DB:db.svc \
+	-v /tmp/:/data \
+	-p 8080:8080 \
+	-u 1001 \
+	-d \
+	/bin/startup.sh
+
+what about container images and relationships between container bundles
+- The closes analogy are the software packages on your linux system.
+- If you want to install "postgresql" package centers, you need to download it from somewhere in the form of an rpm file.
+You can get it from the yam repository or download directly from some website.
+
+Skopeo is a great for working with container iamges
+but as wehave learned, it knows nothing about container bundles
+
+image --> bundle --> container
+
+umoci:
+======
+umoci is a tool is directly from OCI(Open Container Initative) to modify a container image
+its a very lowlevel tool that allows you to directly play around with image contents
+
+mot insteresting for our use case is that umoci can unpack any container image into a container bundle. if you want,you can even modify this bdundle and repack it back to a new container image
+though, naturally, its not the most user friendly way to build container images.
+to install umoci
+https://hithub/opencontainers/umoci/releases/tag/
+
+wget <umoci tool>
+chmod -x umoci.amd64
+mv umoci.amd64 ~/.local/bin/umoci
+which umoci
+~/.local/bin/umoci
+umoci --version
+
+we need to create every file and directory
+or another way by untar the conatiner image
+
+umoci unpack --rootless --image httpd:2.4.47 bundle
+cd bundle
+xxxxxxx.mtree
+umoci.json
+config.json
+rootfs directory
+
+rm umoci.json xxxxx.mtree
+
+cd rootfs
+it will contains complete fs to run the container
+cd ../
+bat config.json
+image-spec config --(converted to)--> runtime-spec config file
+
+RUNC(most popular runtime container):
+====================================
+install container runtime
+image --> bundle --> container
+
+we need 
+	- Cgroups
+	- namespaces
+	- capabilities
+	- SELinux etc..
+
+you can either install runc package or containerd package, which includes runc inside it.
+
+
+sudo dnf install runc -y
+
+runc --version
+cd bundle 
+ls
+config.json
+rootfs
+runc run test
+error out with permission denied: xxxxx: make_sock: could not bund to address [::]:80
+
+vi rootfs/usr/local/apache2/conf/httpd.conf
+and change to port from 80 to 8091
+$ runc run test
+curl localhost:8091
+
+ps --forest -x
+
+runc run test --detach
+it will fail
+vi config.json
+and make to False
+runc run test --detach
+cd /run/user/1000/runc
+ls
+test
+cd test
+bat state.json | jq
+
+CRUN:
+=====
+sudo dnf install crun -y
+CRUN is an alternative oci-runtime
+CRUN is a fast and low-memory footprint OCI Container Runtime fully written in C.
+crun conforms to the OCI Container Runtime specifications (https://github.com/opencontainers/runtime-spec).
+
+cd bundle
+crun run test
+curl localhost:8091
+cd /run/user/1000/crun
+ls
+cd test
+cat config.json | jq| bat
+
+===============
+
+Dockerfile Vs  Containerfile
+
+========
+Buildah:
+========
+
+building images with Buildah
+
+vi Containerfile
+================
+FROM alpine
+
+RUN apk update $$ apk add curl
+
+buildah build
+buildah images
+buildah build -t my-first-image:latest
+buildah login quay.io
+builday tag 3wnsn5262 quay.io/mkdev/dockerless:latest
+buildah pull httpd
+buildah from alpine
+output: alpine-working-container
+buildah ps
+buildah run alpine-working-container --apk update
+buildah run alpine-working-container --apk add curl
+buildah config -e ENVIRONMENT=test alpine-working-container
+buildah unshare
+buildah mount alpine-working-container
+ls
+Containerfile
+ls /home/k..../.local/share/containers/storage/overlay/xxxxx/merged
+cat /home/k..../.local/share/containers/storage/overlay/xxxxx/merged/etc/os-release
+exit
+buildah commit alpine-working-container localhost/my-first-image:latest
+
+buildah rm alpine-working-container 
+
+vi buildah.sh
+put all steps in one script
+chmod -x buildah.sh
+mv buildah.sh build.sh
+./build.sh
+this second approach is quite a lowlevel, if might be you have some other conatiners and complex
+buildah unshare
+
+ROOTLESS Containers:
+====================
+buildah no need root
+sudo useradd image-builder
+sudo su image-builder
+buildah images
+echo "FROM alplime" >> ~/Containerfile
+buildah build -t new-user-image:latest -f ~/Containerfile
+
+
+
+

@@ -622,7 +622,7 @@ echo $?
 0
 
 Managing pods using podman
-
+===========================
 - managing rootless pods
 - managing rootfull pods
 
@@ -630,6 +630,7 @@ podman pod
 podman ps
 
 rootless pods:
+===============
 podman pod ps
 podman ps -a --pod
 podman pod stop wp-pod
@@ -655,6 +656,7 @@ $ podman pod list
 
 
 rootfull pods:
+=============
 sudo -i
 podman pod create --name root-pod -p 8081:80
 podman pod ps
