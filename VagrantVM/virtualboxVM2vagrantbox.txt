@@ -1,0 +1,159 @@
+download preinstalled vm's from https://www.osboxes.org/
+and find the credentails for your centos8
+https://www.osboxes.org/centos/#centos-8-4-info
+Username: osboxes
+Password: osboxes.org
+Root Account Password: osboxes.org
+Guest Tools: Open-VM-Tools Installed
+Keyboard Layout: US (Qwerty)
+VMware Compatibility: Version 10+
+
+login to existing virtualbox VM
+Create a shell script for vagrant user and group with ssh configurations
+==========================================================================
+Please refer for the users creation and users home directory creation
+https://www.serverlab.ca/tutorials/linux/administration-linux/how-to-create-a-user-on-centos/
+
+$ nano adduser.sh
+Paste the code below and save the file.
+
+# Vagrant specific
+date > /etc/vagrant_box_build_time
+
+# Add vagrant user /usr/sbin/groupadd vagrant
+/usr/sbin/useradd student1
+/usr/sbin/useradd vagrant -g vagrant -G wheel
+echo "vagrant"|passwd --stdin vagrant
+echo "vagrant        ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers.d/vagrant
+chmod 0440 /etc/sudoers.d/vagrant
+
+# Installing vagrant keys
+mkdir -pm 700 /home/vagrant/.ssh
+wget --no-check-certificate 'https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub' -O /home/vagrant/.ssh/authorized_keys
+chmod 0600 /home/vagrant/.ssh/authorized_keys
+chown -R vagrant /home/vagrant/.ssh
+
+# Customize the message of the day
+echo 'Welcome to your Vagrant-built virtual machine.' > /etc/motd
+
+Make the script executable and run it.
+
+chmod +x adduser.sh
+./adduser.sh
+
+Here's a step by step guide to convert a Virtualbox .ova to a Vagrant box.
+==========================================================================
+List your VMs to find the VM id you want to convert:
+$ VBoxManage list vms
+"testing" {a3f59eed-b9c5-4a5f-9977-187f8eb8c4d4}
+
+You can now package the .ova VM as Vagrant box:
+$ vagrant package --base a3f59eed-b9c5-4a5f-9977-187f8eb8c4d4 --output name-of-your-box.box
+$ vagrant package --base 770b0987-00e7-4e4c-86c3-03c7f20732a8 --output centos8.box
+
+note: delete the virtualbox if the virtualbox name is the same
+
+the command vagrant package runs for quite some time before it can creates a Vagrant box. Be faithful and wait.
+
+Add the new box to the list of local Vagrant boxes:
+$ vagrant box add new-box-name name-of-your-box.box
+$ vagrant box add centos8 /data/vagrantvms/centos8.box
+
+check whether your vagrant box added into your vagrant box list command.
+$ vagrant box list
+
+Init, up, ssh and start usign your Vagrant box:
+$ vagrant init #Init the new box with a Vagrantfile
+$ vagrant init <boxname>
+$ vagrant init centos8
+$ vagrant up
+$ vagrant ssh
+And enjoy!
+
+@topplethepat
+Tip
+topplethepat commented on Sep 4, 2020
+The first command worked great, but now with:
+vagrant box add new-box-name name-of-your-box.box
+
+I'm getting an error. Do I need to include the path to the new box?
+
+@suniilsync
+Tip
+suniilsync commented on Sep 26, 2020
+The command should be
+vagrant box add --name
+
+Issues with vagrant up
+========================
+
+Vagrant was unable to mount VirtualBox shared folders. This is usually
+because the filesystem "vboxsf" is not available. This filesystem is
+made available via the VirtualBox Guest Additions and kernel module.
+Please verify that these guest additions are properly installed in the
+guest. This is not a bug in Vagrant and is usually caused by a faulty
+Vagrant box. For context, the command attempted was:
+
+mount -t vboxsf -o uid=1001,gid=1001 vagrant /vagrant
+
+The error output from the command was:
+
+mount: /vagrant: unknown filesystem type 'vboxsf'.
+
+solution: vagrant-vbguest plugin has to be installed.
+
+vagrant plugin install vagrant-vbguest #install plugin
+vagrant destroy #clean repos
+vagrant up #relaunch
+
+i got the below error
+Stderr from the command:
+
+umount: /mnt: not mounted.
+
+I have uninstall vagrant-vbguest and install vagrant-vbguest.
+
+vagrant plugin uninstall vagrant-vbguest
+vagrant plugin install vagrant-vbguest --plugin-version 0.21
+vagrant reload
+
+Now the target is to convert vagrantbox to docker container
+===========================================================
+There are therefore 3 main steps to getting into your container:
+
+– Install ShutIt on the server
+
+– Run the ‘copyserver’ ShutIt script
+
+– Run your copyserver Docker image as a container
+
+Step 1
+Install ShutIt as root:
+
+sudo su -
+pip install shutit
+The pre-requisites are python-pip, git and docker. The exact names of these in your package manager may vary slightly (eg docker-io or docker.io) depending on your distro.
+
+You may need to make sure the docker server is running too, eg with ‘systemctl start docker’ or ‘service docker start’.
+
+Step 2
+Check out the copyserver script:
+
+git clone https://github.com/ianmiell/shutit_copyserver.git
+Step 3
+Run the copy_server script:
+
+cd shutit_copyserver/bin
+./copy_server.sh
+There is a prompt to ask what docker base image you want to use. Make sure you use one as close to the original server as possible.
+
+Step 4
+Run the built image:
+
+docker run -ti [username]/copyserver /bin/bash
+
+
+If none of the above work, send the output of:
+
+./copy_server.sh -l debug --echo
+cd /tmp/shutit_copyserver && shutit build --echo -d docker -s repository tag yes -s repository_name copyserver -l DEBUG

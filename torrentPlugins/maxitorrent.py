@@ -16,7 +16,7 @@ except ImportError:
     from HTMLParser import HTMLParser
 
 class maxitorrent(object):
-    url = 'https://maxitorrent.com'
+    url = 'https://atomixhq.com'
     name = 'MaxiTorrent'
     size = ""
     count = 1
@@ -199,4 +199,4 @@ class maxitorrent(object):
 
 if __name__ == "__main__":
     m = maxitorrent()
-    m.search('loki')
+    m.search('calamar')
