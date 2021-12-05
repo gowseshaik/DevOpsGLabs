@@ -1,0 +1,70 @@
+Set Up Git Server in Linux
+October 20, 2021Linux0 Comments179 Views
+There are many Git hosting services such as GitHub, GitLab, Bitbucket, etc. However hosting services often has restrictions. When wanted more control, the best choice is to run Git server on your own server.
+
+This tutorial shows how to set up Git server in Linux. Commands have been tested on Ubuntu 20.04 LTS.
+
+Prepare environment
+Make sure you have installed Git in your system.
+
+Set up Git server
+Create a new user for managing the Git repositories:
+
+sudo adduser --system --group --shell /bin/bash git
+Command creates git user and /home/git home directory. It will be used to store all the repositories.
+
+Use the su command to switch to git user:
+
+sudo su - git
+Create SSH directory for that user and set correct permissions:
+
+mkdir ~/.ssh
+chmod 700 ~/.ssh
+Create a authorized_keys file which will be used to store SSH keys of the authorized users. Set correct permissions for that file.
+
+touch ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+Git server is ready. Now we can run the following command to initiate a new empty repository:
+
+git init --bare ~/projects/project_name.git
+You can specify directory name as you want. But you should to create repository in home directory of the git user.
+
+Add SSH keys
+To be able to access repository in the Git server, we need to add SSH public key of authorized user to the authorized_keys file for the git user.
+
+Open authorized_keys file in Git server:
+
+nano ~/.ssh/authorized_keys
+Add SSH public key of the user in a file. You can get public key by running the following command in local system:
+
+cat ~/.ssh/id_rsa.pub
+If you get error ‘No such file or directory’, you need to generate SSH key pair. It can be done using the following command:
+
+ssh-keygen
+The SSH public key will look something like this:
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCYDEAfebZoY1/N56v/4oD4QVPBpcxND3TcCGMFq/PCGoFlZ0FUlweQwSYtH+J+yljB9yL/TE0xAA+23hyfRteebYSt0ul/e67yHF4xOJtY/JYhVkWYv+e5qv0fZp46+GpMYGVzQfBzv/nu5fcEcFe33LHfakrP8i3y2PB10rK6ZG/+si7zGBmjDzIlAqsD96H0SXbuVgXpYAitxb/vop9JZbwbfMWzq+sjBt3qRRHA97yzItQaF3Ne2gfewIpUPDZ4uX2REJbuoPPrQ/D7jeNGJRwMgwwby9Ngs17SKpEsa+YrdtyaHZ+iVOSaabqBL0G/7W0UKXJCRdzkpT93V/XevAH6wRG27LL8KnNuPBcgbbaQJvp/PjcHExy6gkqkTV5DM1EBL+ICoC3TyyJNulLTqfzWlAIbY1u+Z9rzqtBPZDu7buiN/wrUf/xujeJa4/PaU1H2ZXR+SgaWQ0eIqkiEuT1TeYzs+P1X/yTOxLG/qHnaiUnQzsU3CA0JaGylhJM= tester@ubuntu
+Setup up local Git repository
+In your local system create a project directory and navigate to it:
+
+mkdir project_name && cd project_name
+Initialize Git repository:
+
+git init .
+Add remote Git repository to your local repository:
+
+git remote add origin git@<IP_ADDRESS>:projects/project_name.git
+<IP_ADDRESS> is IP address of the Git server.
+
+To test if everything is working as expected, create a file:
+
+touch README
+Add changes to the staging area:
+
+git add .
+Save changes to the local repository:
+
+git commit -m "project init"
+Upload local repository changes to a remote repository:
+
+git push origin master
