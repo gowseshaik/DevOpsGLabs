@@ -67,6 +67,9 @@ $ vagrant init #Init the new box with a Vagrantfile
 $ vagrant init <boxname>
 $ vagrant init centos8
 $ vagrant up
+# Check for machine IP
+$ vagrant ssh-config
+
 $ vagrant ssh
 And enjoy!
 
