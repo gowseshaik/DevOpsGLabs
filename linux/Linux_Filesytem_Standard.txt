@@ -1,0 +1,270 @@
+This is a specification that documents the standards for the Linux Filesystem Hierarchy:
+
+http://sites.google.com/site/tfsidc/Linux-Filesystem-Standard/fhs-2.3.pdf?attredirects=0
+
+General Tips:
+
+Filesystems are categorized based on whether they are sharable or not.  Sharing implies network sharing across the network.  For example, it's common to share certain filesystems for diskless nodes.
+
+/ (root) is private; cannot be shared.
+
+/etc is private; cannot be shared.
+
+/usr is sharable.
+
+/usr/local is considered to be private.  This is where you install software that is to be local to the machine hosting the filesystem.  This is also where software under development should be placed.  For example, if you install a package from it's source, the standard is to install the software under /usr/local.  The /usr filesystem is reserved for software vendor distribution software (i.e. RedHat or SuSE provided packages).  Even though /usr can be shared, you should consider whether or not to share /usr/local.
+
+/usr/lib is sharable.  Programs in /usr/bin that reference libraries would place them here.
+
+/var is private; cannot be shared.  There are documented exceptions in the FHS that indicate that subdirectories under /var, such as /var/mail can be shared.
+
+/opt is sharable.  This is a Posix standard.  Third party software would be placed here.
+
+/tmp is private; cannot be shared.
+
+/lib is sharable.  The /lib directory generally falls under the / (root) filesystem, which would generally make it non-sharable.  Libraries needed by programs in /bin and /sbin would be placed here.  Kernel modules will place their necessary libraries here.
+
+/home is sharable.
+
+/boot is private; cannot be shared.
+
+/bin is sharable.  The /bin directory generally falls under the / (root) filesystem, which would make it non-sharable.  This is purely historic, as / (root) was never shared with diskless nodes, and / was always mounted first during the boot process.  Programs that were needed to bootstrap the system were placed in /bin.
+
+Production Environments:  This entails a standalone server running business applications.
+
+/ (root) filesystem
+
+/var filesystem  -- NOTE:  you may also use tmpfs here.
+
+/tmp filesystem  -- NOTE:  you may also use tmpfs here.
+
+/home filesystem
+
+/opt filesystem
+
+/home filesystem
+
+swap partition(s)
+
+/boot  -- NOTE:  the creation of a separate /boot partition really depends on the distribution of Linux that you are using.  RedHat requires it, SuSE or Debian does not.
+
+Development Environment: 
+
+This could be configured as a desktop.  You really don't need separate /var, /tmp, or /opt.  I would expect that /home is network mounted from a global NFS server.
+
+QA Environment:
+
+This MUST be configured identical to a Production Environment, with the exception of the total size allocated for each of the filesystems.
+
+Embedded Environments:
+
+/ (root) filesystem
+
+/tmp implemented as a tmpfs filesystem
+
+/var implemented as a tmpfs filesystem
+
+Desktop Environments:
+
+/ (root) filesystem
+
+/home filesystem
+
+swap partition
+
+Diskless Node server:
+
+/ (root) filesystem:  For the server
+
+/home filesystem -- to be shared.
+
+/usr filesystem -- to be shared
+
+/tmp filesystem -- private
+
+/var filesystem -- private
+
+/opt filesystem -- to be shared
+
+
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+B
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+You create separate directories to contain the / (root) filesystem for each diskless node being supported.

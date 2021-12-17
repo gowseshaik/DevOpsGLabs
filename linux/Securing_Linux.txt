@@ -1,0 +1,29 @@
+Do not allow telnet or ftp access to the target system.
+
+Run the firewall package that is bundled with your distribution.  You may need to allow the following services:
+
+ssh
+
+http & https  (if we're hosting a web server)
+
+ldap & ldaps (if we're using ldap)
+
+portmap (if we're using NFS)
+
+nis (if we're using NIS)
+
+ntp (if we're using ntp)
+
+Run the ssh daemon for remote access, prohibit root login via ssh.
+
+Only run ssh on designated interfaces.  You don't want to allow sshd to listen on any interface found on the system.
+
+Configure sshd to disallow login, authenticate only using public keys.
+
+Create the "wheel" group in the /etc/group file.
+
+Authorize the "wheel" group in your /etc/sudoers file.  Only put your IT Administration staff in the wheel group.
+
+Configure your /etc/pam.d/su file to trust users in the wheel group.
+
+  We've accomplished a few things here worth discussing.  First, we only allow remote access by ssh.  This will ensure that any connection to the machine is encrypted.  Second, we limit the interfaces that sshd will listen on.  You'd normally configure a maintenance network for access, but disable the network connected to the DMZ.  Third, we disallow root access via ssh.  We expect authorized users, in the wheel group, to be the only ones that ever need to be root.  Therefore, the entry in /etc/pam.d/su to trust the wheel group will allow our administrators to "su -" to root, without requiring a password.  It's imperative that you only put your IT Administrators in the wheel group.  We also satisfy the need to remote execute batch jobs as root.  Typically, an IT useraccount (member of wheel group), would ssh to the target host, and be authenticated via a public key.  Then the account may use "su - /program" or "sudo /program" in order to execute the privileged program.  The syslog will log all activity for su and sudo.  Fourth, we disallow login and authenticate using only public keys.  This is an excellent way of locking down a system.  The user can only login via a public key exchange.  The challenge; how to get an authorized keys entry on the remote system given that you can't login without an entry in authorized_keys in the first place.  The solution is to either have the root user (the admin) copy your public key into your authorized_keys file, or to use something like a configuration management system (such as puppet) with a script to push your public key into your authorized_keys files on all the remote systems.

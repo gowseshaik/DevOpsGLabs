@@ -1,0 +1,11 @@
+#! /usr/bin/expect -f
+
+#debug 1
+
+spawn scp -r -o StrictHostKeyChecking=no /root/.ssh root@[lindex $argv 0]:/root/
+
+expect ".*?assword:*"
+
+send "somepassword\r"
+
+interact

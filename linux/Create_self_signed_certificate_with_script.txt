@@ -1,0 +1,195 @@
+This is a silly little script I created many years ago to create a self-signed certificate for use with Apache SSL.
+
+#! /bin/bash
+
+# vi:set nu ai ap smd showmatch tabstop=4 shiftwidth=4:
+
+# NAME: certificate_create
+
+# AUTHOR: Tom Sandholm (tom.sandholm AT gmail DOT com)
+
+# VERION: 1.0
+
+# DATE: Mon Apr 14 12:07:51 EDT 2003
+
+# DESCRIPTION:  Program to create SSL certificate for Apache
+
+#
+
+# expect an argument that is the FQDN of the machine
+
+# to create the certs for.
+
+HOST=${1?Must declare FQDN}
+
+tmp=${HOST%%.*}
+
+tmp1=$(date '+%m_%d_%Y')
+
+TAR_FILENAME="${tmp}_${tmp1}"
+
+# function to Generate Server Key
+
+# args: pass-phrase output-filename
+
+function GenerateServerKey {
+
+    PSW="${1?Must declare a pass phrase}"
+
+    OUT="${2?Must declare the output filename}"
+
+    openssl genrsa -des3 -passout pass:${PSW} -out $OUT 1024
+
+}
+
+# function to remove a pass phrase from a key file
+
+# args: pass-phrase input-key-filename output-nopw-key-filename
+
+function RemovePassPhrase {
+
+    PSW="${1?Must declare a pass phrase}"
+
+    IN="${2?Must declare the input filename}"
+
+    OUT="${3?Must declare the output filename}"
+
+    openssl rsa -in $IN -passin pass:${PSW} -out $OUT
+
+}
+
+# function to generate a certificate request
+
+# args: key-filename csr-filename
+
+function GenerateCertificateSigningRequest {
+
+    IN="${1?Must declare key file}"
+
+    OUT="${2?Must declare the csr file}"
+
+    CONFIG="./openssl.cnf"
+
+echo "
+
+RANDFILE        = $ENV::HOME/.rnd
+
+[ req ]
+
+default_bits        = 1024
+
+default_keyfile     = keyfile.pem
+
+distinguished_name  = req_distinguished_name
+
+attributes      = req_attributes
+
+prompt          = no
+
+output_password = mypass
+
+[ req_distinguished_name ]
+
+C           = US
+
+ST          = New Hampshire
+
+L           = New Hampshire
+
+O           = TomKat Stable
+
+OU          = WebHosting
+
+CN          = $HOST
+
+emailAddress        = whoever-the-admin-is@somecompany.com
+
+[ req_attributes ]
+
+challengePassword       = deleteme" > $CONFIG
+
+    openssl req -new -key ${IN} -out ${OUT} -config $CONFIG
+
+}
+
+# function to sign a certificate
+
+# args: csr-filename key-filename cert-filename
+
+function SelfSignCert {
+
+    IN="${1?Must declare the certificate request file}"
+
+    KEY="${2?Must declare the key file}"
+
+    OUT="${3?Must declare the certificate output file}"
+
+    openssl x509 -req -days 365 -in ${IN} -signkey ${KEY} -out ${OUT}
+
+}
+
+echo ">>> Certificate Create"
+
+echo ">>> Generating certificate for host: $HOST"
+
+echo ""
+
+echo ">>> GenerateServerKey"
+
+# Generate Server Key File
+
+# args: pass-phrase key-filename
+
+GenerateServerKey "deleteme" "./${HOST}.key"
+
+echo ""
+
+echo ">>> RemovePassPhrase"
+
+# Remove Pass Phrase from keyfile
+
+# args: pass-phrase key-filename nopw-key-filename
+
+RemovePassPhrase "deleteme" "./${HOST}.key" "./${HOST}.key.nopw"
+
+echo ""
+
+echo ">>> GenerateCertificateSigningRequest"
+
+# Generate Certificate Signing Request
+
+# (cert-request)
+
+# args: nopw-key-filename csr-filename
+
+GenerateCertificateSigningRequest "./${HOST}.key.nopw" "./${HOST}.csr"
+
+echo ""
+
+echo ">>> SelfSignCert"
+
+# Self Sign Certificate
+
+# args: csr-filename nopw-key-filename crt-filename
+
+SelfSignCert "./${HOST}.csr" "./${HOST}.key.nopw" "./${HOST}.crt"
+
+echo ""
+
+echo ">>> Creating TarBall $TAR_FILENAME"
+
+tar cvf ./${TAR_FILENAME}.tar $HOST*
+
+gzip -9 ./${TAR_FILENAME}.tar
+
+echo ""
+
+echo ">>> TarBall is ${TAR_FILENAME}.tar.gz"
+
+rm ./${HOST}.csr ./${HOST}.key.nopw ./${HOST}.key ./${HOST}.crt
+
+echo ""
+
+echo ">>> all done..."
+
+exit 0
