@@ -1,0 +1,180 @@
+1. Create directory and enter it
+=================================
+mkdir Moment
+cd Moment
+
+
+2. Create empty git repo
+========================
+$ git init .
+Initialized empty Git repository in /Users/bessarabov/Moment/.git/
+The dot here means "current directory". Now we are in the directory "Moment", so the command "git" has created git repo here.
+
+Running git status shows that this is a empty git repo:
+
+$ git status
+On branch master
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+
+3. Add remote
+=============
+The empty git repo that we have creates in the previous step has no remotes. We can check it with the command:
+
+$ git remote -v
+It does not output anything, it means that there is no remotes.
+
+3.1. To add remote we must execute command:
+===========================================
+$ git remote add origin https://github.com/bessarabov/Moment.git
+This command adds remote with the name "origin" (this is the standard name, most of the time the remote is called "origin"). We can check that the remote is set with the command:
+
+3.2. To check the remote repo added into your local
+====================================================
+bessarabov@air:~/Moment$ git remote -v
+origin  https://github.com/bessarabov/Moment.git (fetch)
+origin  https://github.com/bessarabov/Moment.git (push)
+You can see that there are is the same remote for fetch (get data) and push (send data), git can be set to get data from one remote and to send data to the other remote, but such setup is extremely rare. Usually the fetch & push remote are the same.
+
+The command "git remote add" just changed file with your local git repo config, here is the fragment of the file ".git/config" containing information about remote:
+
+[remote "origin"]
+        url = https://github.com/bessarabov/Moment.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
+        
+4. Fetch everything from remote
+=================================
+Now we have our own git repo and we have a remote connected to it. Our own git repo is empty. We can copy everything from the remote repo to our repo with just one command:
+
+$ git fetch
+remote: Enumerating objects: 83, done.
+remote: Counting objects: 100% (83/83), done.
+remote: Compressing objects: 100% (40/40), done.
+remote: Total 583 (delta 26), reused 62 (delta 14), pack-reused 500
+Receiving objects: 100% (583/583), 81.16 KiB | 573.00 KiB/s, done.
+Resolving deltas: 100% (272/272), done.
+From https://github.com/bessarabov/Moment
+ * [new branch]      master            -> origin/master
+ * [new tag]         1.0.0             -> 1.0.0
+ * [new tag]         1.0.1             -> 1.0.1
+ * [new tag]         1.1.0             -> 1.1.0
+...
+Command "git fetch" by default is working with remote with the name "origin". If we want to get data from some other remote, say "my_fork" we need to run "git fetch my_fork".
+
+So, after "git fetch" our git repo has everything that is in the repo "origin".
+
+But if we check the files we have in our local git repo, there is only a .git/ directory:
+
+$ ls -1a
+.
+..
+.git
+Our git repo has everything that is in the remote repo, but all the files are hidden somewhere in the .git/ directory. To see the files we need to switch working directory to some state of the git history.
+
+5. Switch working directory to the state, by finding the default branches in your git remote
+=============================================================================================
+To see the files in the working directory we need to switch to some git commit. We will switch to the latest commit in de default branch.
+
+First of all we need to find out what is the default branch. Usually it is called "master", but sometimes it has some other name. To find it out, we need to run "git remote show origin". This command interacts with remote, so it will not work without internet.
+
+$ git remote show origin
+* remote origin
+  Fetch URL: https://github.com/bessarabov/Moment.git
+  Push  URL: https://github.com/bessarabov/Moment.git
+  HEAD branch: master
+  Remote branches:
+    master            tracked
+The line starting from "HEAD branch:" is what we are looking for. Here is is written "HEAD branch: master", so this repo has the default branch called "master" (this is the name for the default branch in the most repos, but there are some rare exceptions).
+
+5.1. Now we know the name of the default branch and we can switch our working copy to it:
+=========================================================================================
+$ git checkout -b master origin/master
+Branch 'master' set up to track remote branch 'master' from 'origin'.
+Already on 'master'
+
+Git: List Remote Branches
+==========================
+There are three ways to list the remote branches associated with a Git repository:
+
+git branch -a: See both local and remote branches
+git branch -r: See only remote branches
+git remote show: See remote branches and associated metadata
+The most common commands are git branch -a and git branch -r because they only list the branches. git remote show provides more detailed information about each branch which is not always necessary.
+
+example as follows
+ all remote and local branches
+gouse  /  data  GouseBooks  git branch -a                                                                 master 
+  main
+* master
+  remotes/origin/main
+  
+  only local branches
+ gouse  /  data  GouseBooks  git branch                                                                    master 
+  main
+* master
+
+ only remote branches
+ gouse  /  data  GouseBooks  git branch -r                                                                 master 
+  origin/main
+  
+To fetch content of remote branch
+=================================
+ git remote show origin
+
+gouse  /  data  GouseBooks  git fetch origin master                                                       master 
+remote: Enumerating objects: 3, done.
+remote: Counting objects: 100% (3/3), done.
+remote: Compressing objects: 100% (3/3), done.
+remote: Total 3 (delta 0), reused 3 (delta 0), pack-reused 0
+Unpacking objects: 100% (3/3), 15.06 KiB | 134.00 KiB/s, done.
+From https://github.com/gowseshaik/GouseBooks
+ * branch            master     -> FETCH_HEAD
+ * [new branch]      master     -> origin/master
+
+To push your changes to remote branch
+======================================
+$ git push --set-upstream origin master
+
+To list remote repositories without updating your remote-tracking branches.
+============================================================================
+$ git ls-remote 
+
+If repository connected with multiple remotes, use the following command syntax.
+================================================================================
+git ls-remote --heads <remote_name>
+
+To switch remote/local branch from git
+================================
+gouse  /  data  GouseBooks  git checkout -b master origin/master
+Branch 'master' set up to track remote branch 'master' from 'origin'.
+Switched to a new branch 'master'
+
+To delete remote branch from git
+================================
+gouse  /  data  GouseBooks  git push origin --delete master                                          1   master 
+Username for 'https://github.com': gowseshaik
+Password for 'https://gowseshaik@github.com': 
+To https://github.com/gowseshaik/GouseBooks.git
+ - [deleted]         master
+
+
+To deleting Branches:
+==================
+Let's assume our work on "contact-form" is done and we've already integrated it into "master". Since we don't need it anymore, we can delete it:
+
+$ git branch -d contact-form
+Tidy as we are, we also delete the remote branch by using the "git push" command with the "--delete" flag:
+
+$ git push origin --delete contact-form
+We have now removed both the local and remote versions of the branch.
+
+For our teammates, however, the situation might look a bit different:
+
+Fetch with "Prune" Option: Although we deleted the remote branch, it might still show up for other members of our team. To make sure that only active branches are displayed in a remote repository, it makes sense to always use the git fetch command with the --prune option:
+$ git fetch origin --prune
+Local Branches: In case one of our colleagues has created a local branch from the remote version of our contact-form branch, this will of course stay untouched! Deleting a branch on a remote never affects any of the existing local branches.
+
+
+
