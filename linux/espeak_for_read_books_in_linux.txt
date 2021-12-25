@@ -1,0 +1,4 @@
+Espeak, a TTS tool for Linux and how you can use it to read books. I really do use it to read 11 books everyday/night and it's very helpful in regards to my productivity and life.
+
+$sudo apt-get install espeak
+$espeak -f testfile.txt
