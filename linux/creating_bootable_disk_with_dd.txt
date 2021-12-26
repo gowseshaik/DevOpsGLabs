@@ -1,0 +1,9 @@
+$ sudo fdisk -l
+$ sudo dd bs=4M if=/path/to/manjaro.iso of=/dev/sdb status=progress oflag=sync
+Of course, replace /path/to/manjaro.iso with the path to your Manjaro ISO, and replace /dev/sdb with the name of your device.
+dd will now copy the contents of the ISO file over to your USB stick. When it’s done, you’re ready to use the USB drive as Manjaro installation media.
+
+Create bootable USB from Linux GUI
+To burn a Manjaro ISO to USB via Linux’s graphical interface, Manjaro recommends the ImageWriter application,
+
+refer : https://linuxconfig.org/create-manjaro-linux-bootable-usb
