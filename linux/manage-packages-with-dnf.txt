@@ -1,0 +1,70 @@
+# dnf search browser
+# dnf info firefox
+# dnf list available | less
+# dnf list installed
+Installing Software Packages:
+$ sudo dnf install firefox
+
+the dnf command takes care of installing all dependencies for a package. 
+To view all the dependencies installed as part of the Firefox installation
+# dnf deplist firefox
+
+Uninstalling Software Packages
+$ sudo dnf remove firefox
+
+$ dnf history
+
+
+With the history subcommand, you can undo or remove any previous transactions.
+example, to remove the vim package, simply run the history command with the undo option followed by the transaction ID, then press Y when prompted to proceed.
+$ sudo dnf history undo 3
+$ sudo dnf history info 3
+
+Removing Unused Dependencies
+$ sudo dnf autoremove
+
+$ sudo dnf clean packages
+
+$ sudo dnf clean metadata
+
+Reinstalling Software Packages
+$ sudo dnf reinstall firefox
+
+Updating Packages With DNF
+$ sudo dnf check-update
+
+$ sudo dnf update
+
+$ sudo dnf update firefox
+
+# dnf search kernel*-4*
+
+dnf list glob_expression…
+Lists information on installed and available packages matching all glob expressions.
+# dnf list abrt-addon\* abrt-plugin\*
+
+Lists all installed and available packages.
+# dnf list all
+# dnf list installed
+# dnf list installed "krb?-*"
+# dnf list available
+# dnf list available gstreamer\*plugin\*
+
+Lists all package groups.
+# dnf group list
+
+Lists the repository ID, name, and number of packages it provides for each enabled repository.
+# dnf repolist
+
+Lists the packages from the specified repository.
+# dnf repository-packages fedora list [option]
+
+# dnf list installed | grep -i httpd
+
+$ dnf list | head
+
+to display information about the abrt package
+# dnf info abrt
+
+
+
