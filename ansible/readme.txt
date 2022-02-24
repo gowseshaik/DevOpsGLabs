@@ -33,4 +33,12 @@ Ansible Terminlogy
 	5) ansible role ( to break a playbook into multiple files. This simplifies writing complex playbooks, and it makes them easier to reuse )
 	
 		look at: https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html     for more terms used in ansible. 
-		
+	
+Ansible , chef & puppet will not be used as configuration containers will not be managed by containers because containers are immutable.
+immutable (containers will come and go) its not as Virtual servers.
+image size will increase, if you use chef and puppet. so will not use configuration tools for any containers.
+
+Any configurtiion tool will be used on VMs only not for containers.
+
+Ansible(controller) - Push Architechute
+Chef & Puppet(master/server -clinet) -- Pull Architechture
