@@ -42,3 +42,16 @@ Any configurtiion tool will be used on VMs only not for containers.
 
 Ansible(controller) - Push Architechute
 Chef & Puppet(master/server -clinet) -- Pull Architechture
+
+id_rsa - key
+id_rsa.pub - lock
+ssh-copy-id user@clinetMachine
+go to user@clientMachine
+
+this ssh key will be copied in .ssh/authorised_keys
+
+Ansible will run on Python
+
+refer : https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+
+
