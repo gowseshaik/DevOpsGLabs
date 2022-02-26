@@ -1,0 +1,107 @@
+https://waydev.co/how-to-reduce-the-git-repository-size/
+===========How to reduce the $ git repository size=============
+
+to know what is the actual size of your repository.
+$ git count-objects -v
+
+This will display your repository size.
+
+To reducing storage space, you have to rewrite your git history. 
+Note that re-writing git history is a very much important task and once you have re-written the git history, 
+you cannot go back to any previous versions or commits. 
+So better you take a backup of your git repository before re-writing the git history.
+
+Cloning the repo locally and keep it somewhere. As I mentioned earlier, 
+cloning a repo includes all $ git history and the repo size will be exactly same as in remote.
+$ $ git clone repo_name.git
+
+Cloning the repo with $ git bare command. You can clone the repo as bare repository, 
+which means you can have the exact copy of the $ git remote repository in your local and from that you can do normal cloning of repository. 
+A bare repository consists of code, exactly how it stored in the remote.
+$ $ git clone repo_name.$ git — bare
+
+$ git ‘gc’ (garbage collection) will remove all data from the repository that is not actually used, or in some way referenced, by any of your branches or tags. 
+In order for that to be useful, we need to rewrite all $ git repository history that contained the unwanted file, 
+so that it no longer references it — $ git gc will then be able to discard the now-unused data.
+
+Another approach is that, tell $ git that your current commit is the initial commit. For that, first checkout to the commit, 
+which you want to make as the initial commit. Then run the following commands :
+
+$ git checkout — orphan latest_branch
+$ git add -A
+$ git commit -am “Initial commit message” #Committing the changes
+$ git branch -D master #Deleting master branch
+$ git branch -m master #renaming branch as master
+$ git push -f origin master #pushes to the master branch
+$ git gc — aggressive — prune=all # remove the old files
+The above commands will forcefully push the current source code to the master branch as the first command.
+
+Note : You should delete all other branches and tags, because it may still contain the old history.
+
+you should not delete all changes older than 30 days (i think it's somehow possible exploiting git, but really not recommended).
+
+$ git gc --aggressive --prune
+
+you can call $ git gc --aggressive --prune, which will perform garbage collection in your repository and prune old objects. 
+do you have a lot of binary files (archives, images, executables) which change often? 
+those usually lead to huge .$ git folders (remember, $ git stores snapshots for each revision and binary files compress badly)
+
+===============================================
+How to clean up the git repo and reduce its disk size
+Clean large git repo and reduce repo size
+
+Hi there! I’m Srebalaji. You are receiving this email because you have subscribed to level up your game in Git.
+
+If you are working in a Git repo for a very long time then you can cleanup your repo to gain disk space.
+
+Git has an internal garbage collection tool that takes care of most of the things but there are few things that we can also do to clean up the repo.
+
+Let’s see some techniques to clean up the repo.
+
+Before applying these techniques to git, make sure you get the size of the .git directory using
+
+$ du -sh .git
+Deleting local reference of the remote branch
+It’s always a good practice to delete a branch after it is merged. Github provides an option to delete the branch once you merged the PR. But this one will delete that branch only in the remote.
+
+Even after the branch is deleted in the remote, it will still have the reference in the local.
+
+To delete all the local references of the remote branch
+
+$ git remote prune origin
+$ git repack
+Packs are Git internal representations that used to combine all individual objects into packs.
+
+Without going much deeper, Packs are used to reduce the load on disk spaces, mirror systems, etc.
+
+$ git repack
+This will create new packs that are not packed yet in the repo. This helps in reducing disk sizes.
+
+$ git prune-packed
+Git will have some pack files. This command will help you to reduce extra objects that are already present in the pack files. This will help you to reduce the size of the pack file itself.
+
+$ git prune-packed
+$ git reflog expire
+Git has a feature called reflog that helps to track Git refs in the local repo. Git has an internal garbage collection mechanism to remove old refs in Git. But there is also a manual mechanism to remove old refs.
+
+$ git reflog expire --expire=1.month.ago
+The above command will remove all refs that are older than one month. I think one month is safer. But if you can mention whatever value you feel safe.
+
+$ git gc
+gc stands for garbage collection. This command will help Git to remove unwanted data in the current repo.
+
+$ git gc --aggressive
+The above command will remove all refs and inaccessible commits in the repo which are older than two weeks. —aggressive will help more time optimizing it.
+
+Combining all command
+$ git remote prune origin && git repack && git prune-packed && git reflog expire --expire=1.month.ago && git gc --aggressive
+
+We have combined all the commands. You can have it as an alias and run it weekly once to have a clean repo.
+
+And don’t forget to see the .git directory size after cleaning up your repo.
+
+Running it across all the repos in your machine will definitely help you reduce some disk space.
+
+That’s it for today :)
+
+See you next week :) :)
