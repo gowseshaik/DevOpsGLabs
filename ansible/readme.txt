@@ -33,7 +33,11 @@ Ansible Terminlogy
 	5) ansible role ( to break a playbook into multiple files. This simplifies writing complex playbooks, and it makes them easier to reuse )
 	
 		look at: https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html     for more terms used in ansible. 
+<<<<<<< HEAD
 		
+=======
+	
+>>>>>>> fca4d62f4769edc42e032456de9b5fa568f916a3
 Ansible , chef & puppet will not be used as configuration containers will not be managed by containers because containers are immutable.
 immutable (containers will come and go) its not as Virtual servers.
 image size will increase, if you use chef and puppet. so will not use configuration tools for any containers.
@@ -52,4 +56,10 @@ this ssh key will be copied in .ssh/authorised_keys
 
 Ansible will run on Python
 
+<<<<<<< HEAD
 refer : https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+=======
+refer : https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+
+
+>>>>>>> fca4d62f4769edc42e032456de9b5fa568f916a3
