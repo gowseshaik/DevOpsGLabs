@@ -34,3 +34,22 @@ Ansible Terminlogy
 	
 		look at: https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html     for more terms used in ansible. 
 		
+Ansible , chef & puppet will not be used as configuration containers will not be managed by containers because containers are immutable.
+immutable (containers will come and go) its not as Virtual servers.
+image size will increase, if you use chef and puppet. so will not use configuration tools for any containers.
+
+Any configurtiion tool will be used on VMs only not for containers.
+
+Ansible(controller) - Push Architechute
+Chef & Puppet(master/server -clinet) -- Pull Architechture
+
+id_rsa - key
+id_rsa.pub - lock
+ssh-copy-id user@clinetMachine
+go to user@clientMachine
+
+this ssh key will be copied in .ssh/authorised_keys
+
+Ansible will run on Python
+
+refer : https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html

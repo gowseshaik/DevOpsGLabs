@@ -1,0 +1,355 @@
+===========Things to know before working with ansible=============
+	
+	1) ansible is agentless ( means, we do not need to run any agent on remote servers for communication )
+	
+	2) ansible follows push model ( means we push the configuration from ansible controller to remote servers )
+	
+	3) ansible uses SSH protocol to communicate with remote servers
+	
+	4) ansible uses below methods for remote servers authentication
+	
+			password based
+			key based
+
+Ansible controller ( is the machine/host/server where we install ansible ) 
+
+	/etc/ansible default directory ( we have two important file in it )
+	
+		hosts ( default inventory file in which we can mention remote servers we want to apply/push the changes to)
+		
+		ansible.cfg  ( default ansible configuraton - can be used to customize as per our need )
+
+
+========================Ansible Terminlogy====================
+
+	1) ansible ad-hoc commands ( single task that can be executed against remote servers )
+	
+	2) ansible playbooks  ( set of instructions written in a .yml file to execute against remote servers  )
+	
+	3) ansible facts ( information about remote servers collected ansible before running any task )
+	
+	4) ansible modules ( are the units of work that ansible ships to remote servers for executing the tasks )
+	
+	5) ansible role ( to break a playbook into multiple files. This simplifies writing complex playbooks, and it makes them easier to reuse )
+	
+		look at: https://docs.ansible.com/ansible/latest/reference_appendices/glossary.html     for more terms used in ansible. 
+
+
+Ansible , chef & puppet will not be used as configuration containers will not be managed by containers because containers are immutable.
+immutable (containers will come and go) its not as Virtual servers.
+image size will increase, if you use chef and puppet. so will not use configuration tools for any containers.
+
+Any configurtiion tool will be used on VMs only not for containers.
+
+Ansible(controller) - Push Architechute
+Chef & Puppet(master/server -clinet) -- Pull Architechture
+
+=======about ssh Keys=======
+id_rsa - key
+id_rsa.pub - lock
+ssh-copy-id user@clinetMachine
+go to user@clientMachine
+
+this ssh key will be copied in .ssh/authorised_keys
+
+Ansible will run on Python
+
+refer : https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+
+
+Note: create hosts files with seperate projects, like 
+[project1]/hosts
+project2/hosts 
+siebel/hosts
+EAI/hosts
+BMS/hosts
+
+Ansible acts as agentless
+Ansible is an idompotent(means, it will not overright, if the things exists)
+Ansible will be used for administration purpose.
+Ansible can be used with both ssh authentication and password authentication.
+Ansible architechture is a push based architechture.
+Ansible runs with Ad-hoc commands for testing purpose.
+Ansible will be used as a configuration management tool, it will not recommended on containers.
+Ansibel works on muttable(VM), not on immutable(containers)
+Ansible uses a playbook as yaml files.
+Ansible hosts will be stored in a file called as inventory file.
+Ansible hosts will be groupped to push our tasks.
+yamlfile uses spaces not tabs as your intendation
+Ansible having pattrens for hosts
+Ansible gather facts of all hosts, once executed your adhoc commands or playbooks.
+Ansible is a push architechture, first it will gather_facts of all servers
+	and checks our passing required changes already exists or not on nodes. 
+
+Ansible Deploy for Bamboo:
+	Main features:
+		- support for main commands ansible and ansible-playbook
+		- automatic cleanup of child processes from ansible
+			In order to use the plugin 
+			you will need to install ansible of the agent 
+			and ensure it is in the system path.
+
+Asible playbook will have src and destinations
+	src --> is your ansible host location
+	destination --> is your nodes location
+
+ansible can be integrated from cicd tools
+ansible having roles.
+=========Ansible configuration===============
+/etc/ansible/ansible.cfg
+default location for hosts file is /etc/ansible/hosts in ansible.cfg
+you can create your own inventory in ansible.cfg under [default]
+[default]
+inventory = /home/user1/hosts_lists.ini
+
+
+
+===================Ansible environment setup with docker===================
+
+
+Network:
+docker network create --subnet 172.20.0.0/16 --gateway 172.20.0.254 ansible_nw
+
+Ansible Controller:
+docker run --rm -itd --name controller --hostname controller --network ansible_nw sreharshav/ubuntu:16:ansible2.75_v2
+
+Web nodes:
+docker run --rm -itd --name web1 --hostname web1 -p 8000:80 --network ansible_nw sreharshav/ubuntu:16:withssh2.0_v2
+docker run --rm -itd --name web2 --hostname web2 -p 8001:80 --network ansible_nw sreharshav/ubuntu:16:withssh2.0_v2
+docker run --rm -itd --name web3 --hostname web3 -p 8002:80 --network ansible_nw sreharshav/ubuntu:16:withssh2.0_v2
+
+App nodes:
+docker run --rm -itd --name app1 --hostname app1 --network ansible_nw sreharshav/ubuntu:16:withssh2.0_v2
+docker run --rm -itd --name app2 --hostname app2 --network ansible_nw sreharshav/ubuntu:16:withssh2.0_v2
+docker run --rm -itd --name app3 --hostname app3 --network ansible_nw sreharshav/ubuntu:16:withssh2.0_v2
+
+Db nodes:
+docker run --rm -itd --name db1 --hostname db1 --network ansible_nw sreharshav/centos7:withssh2.0_v2
+docker run --rm -itd --name db2 --hostname db2 --network ansible_nw sreharshav/centos7:withssh2.0_v2
+docker run --rm -itd --name db3 --hostname db3 --network ansible_nw sreharshav/centos7:withssh2.0_v2
+
+
+and create your playbooks on controller container:
+# docker exec -it controller bash
+vi play1.yml
+
+
+===========About Docker IPs=============
+docker internal ips and differences.
+docker server ip: 192
+docker container ip: 172
+if the subnet changed, it will get a bottleneck.
+
+with default network: DNS resolution is not there 
+so we have the create separate network.
+
+datacenter--> it will work only subnet.
+playwithdocker(docker in docker(did) --> is a container based environment.
+
+public ip is not related to docker, it will be used for managment purpose only. 
+if you enter "ifconfig" the public ip will not show.
+so when you work with docker, we will care about private ip & docker0 network.
+private ip
+docker0
+
+
+==============================adhoc commands:===============================
+
+# ansible -i hosts -a "ls /tmp"
+# ansible -i hosts all -a "touch /temp/secfile"
+
+
+===========Ansible Host pattrens:===========
+https://docs.ansible.com/ansible/latest/user_guide/intro_patterns.html
+# ansible -i hosts web -a free
+it will give all web servers
+
+# ansible -i hosts web:app -a free
+it will give both web and app groups servers free info
+
+# ansible -i hosts all:!db -a free
+it will show all all servers except db servers
+
+# ansible -i hosts all:!db:!app -a free
+it will show all all servers except db and app servers
+
+# ansible -i hosts web:&db -a free
+it will give the common in both groups of web and db 
+
+# ansible -i hosts webservers* -a free
+it will give the all web servers from all both groups
+
+# ansible -i hosts webservers[0:1] -a free
+it will give the output to get based on indexes
+
+
+========Adhoc commands:=======
+please encrypt your password
+https://www.systutorials.com/docs/linux/man/1ssl-openssl-passwd/
+or with base64
+# openssl passwd -1
+enter your password:
+
+types of states
+state=present (it will make sure to install/active/create)
+state=absent (it will remove/uninstall/deactive/delete)
+become (-b) -- is used to provide password to execute commands as root.
+-s --ask-sudo-pass -- it will be used for password authentication, instead of ssh.
+
+# ansible -i hosts all -m user -a "user=gouseshaik password=223ulksf823w2" state=present
+
+ansible is an idempotent (means, it will not overright, if it exists)
+
+# ansibel -i hosts web -a "userdel testuser"
+
+to test whether your ad-hoc command execute in a proper way or not.
+# ansible -i hosts web1 -a "ls /tmp"
+
+
+========Ansible playbooks=========
+https://www.middlewareinventory.com/blog/ansible-playbook-example/
+yaml uses spaces not tabs
+playbook consits of below topics
+
+--- (is used for indentation, its not necessary)
+gather_facts: yes/no(dont use gather_facts in big environment, 
+						it will get all information of all hosts
+						and all gathered information is stored in /etc/ansible/facts.d)
+	
+vars
+hosts
+become
+- name: create user testuser1
+- name: create user testuser2
+tasks
+state=
+tags
+templates -ninja templates
+handlers
+service
+roles
+
+
+- (when to use?, to define a list)
+its indicate as list in ansible playbook.
+example:
+friends=["gouse","kumar","naaz"]
+
+
+
+============ansible-playbook commands:==============
+ansbile-playbook playbook.yml --list-hosts
+ansbile-playbook  -i hosts user.yml --check ( just a dry-run)
+ansbile-playbook playbook.yml --syntax-check --> you can also check with yamlint http://www.yamllint.com/
+ansbile-playbook playbook.yml --syntax-check --verbose
+ansible-playbook -i hosts users.yml --limit web:app
+
+try to follow like as follows.
+1. ansbile-playbook  -i hosts user.yml --check ( just a dry-run)
+2. ansbile-playbook  -i hosts user.yml 
+
+push to github --> ansible have to trigger from github --> ansible controller will deploy our app to nodes.
+
+
+
+=============================conditional based execution playbooks=======================================
+sequnce of steps calling for with_items and when
+1. with_items
+	2. when
+
+
+operators --> == , and, or
+
+ansible_os_family
+# ansible -i hosts all -m setup | grep -i ansible_os_family
+command: /sbin/shutdown -t now
+when: (ansible_facts['distrubution']=="CentOS" and ansible_facts['distribution_major_version'] == "6") or
+	  (ansible_facts['distrubution']=="CentOS" and ansible_facts['distribution_major_version'] == "7.5")
+Note: if you are working on OS, please mention gather_facts=yes, it will not work if you mention gather_facts=no
+
+==================tags=====================
+tags will be used, when you need to run only certain play in your playbook.
+it can be given as 
+--tags
+--skip-tags
+
+tags:
+   - configuration, testing
+===============templates-ninja=====================
+basically, these templates are based on python.
+regularly it will not use.
+when the configurations are changing frequently on ex: tomcat servers, then go for templates.
+jinja template extention with .j2
+
+==========To store facts_caching============
+export ANSIBLE_CACHE_PLUGIN=jsonfile
+or in the ansible.cfg file
+[default]
+fact_caching=redis
+
+we can store with the following methods
+jsonfile
+memcached
+memory
+mongodb
+pickle
+redis
+yaml
+
+fact_caching=yaml
+fact_caching_connection=/etc/ansible/facts.d --> it will store all gathered facts in this location.
+
+=============To run the command on every one second===========
+watch -n1 ls -al
+
+
+=======to create a cron job @ every 12hrs to gather_facts======
+# ansible -i hosts -m setup
+crontab -e
+0 23 * * * ansible -i hosts -m setup
+crontab -l
+
+now it will update all facts to /etc/ansible/facts.d
+
+now when you are running your playbook next time with gather_facts=no 
+
+======Environment HLD & LLD for any project==========
+HLD - high level design
+LLD - low level design
+
+======Roles==Ansible Galaxy=========
+Roles will be created for repeated things.
+
+to get modules / roles from https://galaxy.ansible.com/
+search for nginx and you will get the list of modules.
+choose what you like based on your requirement and based on their score 5/5 score.
+copy the installation:
+goto controller and navigate to certian path and execute below command.
+# ansible-galaxy collection install nginxinc.nginx_core
+
+to create roles your own
+use # ansible init
+
+to use the already defined rolese from internet like ansible-galaxy 
+use # ansible-galaxy collection install
+
+
+to set the path for your roles
+# ansible-galaxy init --help
+
+# ansibel-galaxy init users --init-path=/etc/ansible/roles/ --offline
+# ansibel-galaxy init tomcat --init-path=/etc/ansible/roles/ --offline
+# ansibel-galaxy init nginx --init-path=/etc/ansible/roles/ --offline
+
+ls -ltr /etc/ansible/roles/
+
+to install nginx with the roles_path
+# ansible-galaxy collection install nginxinc.nginx_core --roles-path=/etc/ansibel/roles
+ls -ltr
+Note: roles (users --> main.yml) will be called from playbooks.yml
+
+in roles only, we have to give Tasks. dont give hosts details(should be in playbooks)
+
+
+
+
