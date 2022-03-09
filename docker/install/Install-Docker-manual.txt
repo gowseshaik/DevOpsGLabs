@@ -9,6 +9,36 @@ Install Docker on Ubuntu:
 	sudo apt-get update
 	sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
+
+once you installed: check with 
+# docker info
+WARNING: No swap limit support
+for the error, please refer: https://debugah.com/solved-docker-info-check-error-warning-no-swap-limit-support-23609/
+
+Solution:
+=========
+1. Edit the/etc/default/grub file.
+At grub_CMDLINE_Linux = "", and add CGroup_enable=memory swapaccount=1
+GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1"
+2. Save, update
+#  sudo update-grub
+3. Restart the server
+# sudo reboot
+4. Check
+# docker info
+
+
+to configure docker repository path:
+C:\ProgramData\Docker\config
+daemon.json
+
+{
+"graph": "D:\\ProgramData\\Docker"
+}
+
+restart docker service.
+
+
 Test the installation by running a simple container:
         docker run hello-world
 

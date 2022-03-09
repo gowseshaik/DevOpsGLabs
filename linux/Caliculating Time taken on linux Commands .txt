@@ -1,0 +1,11 @@
+============== Time caliculation on your linux commands=============
+The time command in Linux is used to determine the duration of execution of a command. This command is useful when you want to know the exection time of a command or a script. By default, three times are displayed:
+
+real time – the total execution time. This is the time elapsed between invocation and termination of the command.
+user CPU time – the CPU time used by your process.
+system CPU time – the CPU time used by the system on behalf of your process.
+
+# time vagrant up
+real    0m 51.69s
+user    0m 0.00s
+sys     0m 0.00s

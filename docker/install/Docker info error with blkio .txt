@@ -1,0 +1,8 @@
+WARNING: No blkio throttle.read_bps_device 
+This warning is not an error. And for most users, this warning can be ignored. This "blkio" is a Docker subsystem used in larger Docker production environments.
+
+I am placing this post with both the question and the answer because this information was not readily available at Stack overflow or elsewhere.
+
+https://docs.docker.com/config/containers/runmetrics/
+
+https://www.kernel.org/doc/Documentation/cgroup-v1/blkio-controller.txt
