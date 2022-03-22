@@ -312,3 +312,85 @@ config.vm.provision :shell, :path => "vagrant-bootstrap.sh"
         zape.vm.box = "ubuntu/trusty64"
         zape.vm.network "private_network", ip: "192.168.32.11", virtualbox__intnet:     true, auto_config: true
     end
+
+==========
+Solutions to “vagrant up” Hangs at “ssh auth method private key”
+
+problem statement:
+$ vagrant up
+Bringing machine 'default' up with 'virtualbox' provider...
+==> default: Clearing any previously set forwarded ports...
+==> default: Fixed port collision for 22 => 2222. Now on port 2200.
+==> default: Clearing any previously set network interfaces...
+==> default: Preparing network interfaces based on configuration...
+    default: Adapter 1: nat
+    default: Adapter 2: hostonly
+==> default: Forwarding ports...
+    default: 22 (guest) => 2200 (host) (adapter 1)
+==> default: Running 'pre-boot' VM customizations...
+==> default: Booting VM...
+==> default: Waiting for machine to boot. This may take a few minutes...
+    default: SSH address: 127.0.0.1:2200
+    default: SSH username: vagrant
+    default: SSH auth method: private key
+	:(
+	:(
+
+solution:
+
+Increase timeout
+Add this line in your Vagrantfile.
+
+config.vm.boot_timeout = 300
+Check network setting
+Make sure that your VM has the Cable Connected setting checked. This setting is in Network tab of the VirtualBox GUI.
+
+Virtualbox - Cable Connected
+
+Or simply add the following line in your Vagrantfile to turn Cable Connected on.
+
+config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--cableconnected1", "on"]
+end
+Turn Hyper-V off
+For Windows users only.
+
+Hyper-V is the windows server virtualization that can create virtual machines on x86-64 systems running Windows, and it can not run with VirtualBox together, so we need to turn off it.
+
+First step, find Turn Windows fetures on or off
+
+Move on to Control Panel -> Programs, under Programs and Features section, click the link as shown in the screenshot below.
+
+Turn Windows fetures on or off
+
+Okay, now make sure that "Windows Hyperviosr Platform" is unchecked. Also, "Virtual Machine Platform" is checked.
+
+Turn off Hyper-v
+
+Windows Hyperviosr Platform: Unchecked
+Virtual Machine Platform: Checked
+
+Click the OK button and then reboot.
+
+Check BIOS setting
+Enable the hardware virtualization in BIOS (VT-x), which is required on Windows OS to run any kind of virtual machine.
+
+Click on VM Preview
+Open the VirtualBox UI for the VM your are running, the screenshot may look like this.
+
+Virtualbox GUI
+
+If the GUI is not shown, add gui = true in the Vagrantfile and try again.
+
+config.vm.provider "virtualbox" do |v|
+  v.gui = true
+end
+Click on the Preview window and press Enter key to make system continue to boot. And then you can see the vagrant up going on.
+
+Bug for bionic64
+If you are using the box ubuntu/bionic64 and having the same problem. There is a confirmed bug that causes some of the newer Ubuntu boxes to boot slowly, which is causing the SSH timeout. Adding the following settings in your Vagrantfile may help.
+
+config.vm.provider :virtualbox do |vb|
+    vb.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
+    vb.customize ["modifyvm", :id, "--uartmode1", "file", File::NULL]
+end
