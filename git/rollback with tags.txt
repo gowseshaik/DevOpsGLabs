@@ -1,0 +1,14 @@
+Git tags are just pointers to the commit. 
+So you use them the same way as you do HEAD, branch names or commit sha hashes. 
+You can use tags with any git command that accepts commit/revision arguments. 
+You can try it with git rev-parse tagname to display the commit it points to.
+
+In your case you have at least these two alternatives:
+
+Reset the current branch to specific tag:
+
+$ git reset --hard tagname
+Generate revert commit on top to get you to the state of the tag:
+
+$ git revert tag
+This might introduce some conflicts if you have merge commits though.

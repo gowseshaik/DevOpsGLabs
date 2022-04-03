@@ -1,0 +1,84 @@
+If we want our git feature branch to be updated with the new changes from the master branch, we need to follow either one of the following techniques:
+
+Merge
+Rebase
+Merging creates more commitment while rebasing rewrites history in the repository.
+
+Let’s suppose we are on any feature branch in the repository we created to add the sub-feature in our development process.
+
+The current state of the branch is following.
+
+$ git branch
+* feature branch
+And there are new commits available on the origin/master branch of the repository:
+
+$ git fetch
+
+From git repository
+   xyz88874..def74125  master -> origin/master
+So how would we merge the above commit from the local branch to the master branch? We have two solutions now, the first is using the merge commands, and the other is the rebase commands in Git.
+
+Update Master Branch Using the merge Command in Git
+As we have the situation where we want to merge the latest commit from the local branch to the master branch, we can use the below command to merge the commits.
+
+1.)
+$ git merge origin/master
+When we are going to commit the changes from the local branch to the remote branch, and if we find some conflicts in it, we’ll first merge the conflicts into a single file and create a new merge commit for it. If we don’t find a conflict in the working directory, a new commit will be pushed directly to a remote branch.
+
+Update Master Branch Using the rebase Command
+As we have the situation where we want to rebase the latest commit from the local branch to the master branch, then we can use the below command to rebase the commits.
+
+2.)
+$ git rebase origin/master
+Rebase shifts up all diverging commits of the feature branch. This indicates that the diverging commits will now consist of \new commit hashes\ because its history will be written again into the master branch.
+
+Additionally, if our feature branch is already pushed to the remote master branch, then we need to force push to get it to update:
+
+3.)
+$ git push origin feature --force
+However, if other developers have checked out that feature branch, this method is not recommended, better to stick with the merge command for this scenario.
+
+=======================
+>>>>git how to update branch from mastershell by Black Bat on Dec 14 2020 Comment
+
+$ git fetch
+$ git rebase origin/master
+
+>>>git how to update branch from mastershell by Fancy Fly on Sep 13 2021 Comment
+
+$ git checkout b1
+$ git merge origin/master
+
+
+>>>>update branch with mastershell by Precious Pheasant on Jan 09 2021 Comment
+	##########MERGE METHOD: (keeps branch history accurate)######
+$ git checkout b1
+$ git merge origin/master
+$ git push origin b1
+
+i tested with this command with in my local branch(Test2) with master branch
+git pull origin master will pull changes from the origin remote master branch and merge them to the local checked-out branch.
+
+gowse@HOST-DevOps >> /d/testing/corporatedataservice (Test2)
+$ git pull origin master
+From http://mprl005.prod.mobily.lan:7990/scm/eaijav/corporatedataservice
+ * branch              master     -> FETCH_HEAD
+Already up to date.
+
+
+	##########REBASE METHOD: (history will appear linear, will conflict if already pushed)##########
+$ git checkout b1
+$ git rebase master
+​
+Source: stackoverflow.com
+
+>>>>git update branch from master shell by Embarrassed Emu on Nov 18 2020 Comment
+
+$ git checkout test-branch    //Checkout the branch you want to update
+$ git merge master            //Merge all code from master to test-branch
+​
+// When your are done with test-branch you can merge all code into master branch
+
+$ git checkout master         // Make sure you are on master branch
+$ git merge test-branch
+

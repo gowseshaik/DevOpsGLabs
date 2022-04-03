@@ -1,0 +1,9 @@
+1). Always develop code on release/feature branch created using main branch.
+2). Never develop on main branch.
+3). Bitbucket rules should be present for no direct push on master branch
+4). Proper commit should be maintained with commit messages.
+5). Always perform the git pull before raising PR on main branch
+6). Minimum 2 or more ticks to be present for a approval of PR
+7). After merging the PR created branch should be deleted.
+8). No additional development should be performed for PR raised branch.
+9). After release deployment, mail should get triggered to developer to deliver the code in master branch.

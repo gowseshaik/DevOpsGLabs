@@ -1,0 +1,6 @@
+Commit should be not too small or not too large
+Commit should be very specific to the module developed/refactored
+Commit message should be very meaningful
+Commit message should follow the Present tense instead of past tense. Not mandatory though
+Added code to handle consumer id – Past Tense
+Add code to handle consumer id – Present Tense 

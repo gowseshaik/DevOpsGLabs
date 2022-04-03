@@ -1,0 +1,6 @@
+To Untrack files from staging area
+$ git restore –staged <filename>
+
+To Restore files : Discarding all the changes
+$ git restore <filename>
+Note: Any new file added will not be deleted as git cannot get a previous version of that file

@@ -1,0 +1,42 @@
+Git: find base branch of a branch
+to get the base brach of your feature-branch
+==========================================
+
+git clone the <branch_repo>
+cd repo_directory
+$git show-branch -a \
+	| grep '\*' \
+	| grep -v `git rev-parse --abbrev-ref HEAD` \
+	| head -n1 \
+	| sed 's/.*\[\(.*\)\].*/\1/' \
+	| sed 's/[\^~].*//‘
+
+
+gowse@DESKTOP-6LCK2HQ MINGW64 ~/Downloads/check
+$ git clone http://10.64.182.232:7990/scm/bil/3gsubscribeunsubscribe.git
+Cloning into '3gsubscribeunsubscribe'...
+remote: Counting objects: 28, done.
+remote: Compressing objects: 100% (24/24), done.
+remote: Total 28 (delta 2), reused 0 (delta 0)
+Unpacking objects: 100% (28/28), 7.55 KiB | 48.00 KiB/s, done.
+
+gowse@DESKTOP-6LCK2HQ MINGW64 ~/Downloads/check
+$ cd 3gsubscribeunsubscribe/
+
+gowse@DESKTOP-6LCK2HQ MINGW64 ~/Downloads/check/3gsubscribeunsubscribe (master)
+$ git show-branch -a
+* [master] Commiting a new component - 3gsubscribeunsubscribe
+ ! [origin/HEAD] Commiting a new component - 3gsubscribeunsubscribe
+  ! [origin/IDEV] Commiting a new component - 3gsubscribeunsubscribe
+   ! [origin/PREPROD] Commiting a new component - 3gsubscribeunsubscribe
+    ! [origin/SIT] Commiting a new component - 3gsubscribeunsubscribe
+     ! [origin/Subscribe_Unsbscribe_123] Commiting a new component - 3gsubscribeunsubscribe
+      ! [origin/master] Commiting a new component - 3gsubscribeunsubscribe
+       ! [origin/release/DEV] Commiting a new component - 3gsubscribeunsubscribe
+        ! [origin/release/PREPROD] Commiting a new component - 3gsubscribeunsubscribe
+         ! [origin/release/PROD] Commiting a new component - 3gsubscribeunsubscribe
+          ! [origin/release/SIT] Commiting a new component - 3gsubscribeunsubscribe
+           ! [origin/release/Test2] Commiting a new component - 3gsubscribeunsubscribe
+            ! [origin/release/gtest] Commiting a new component - 3gsubscribeunsubscribe
+-------------
+*++++++++++++ [master] Commiting a new component - 3gsubscribeunsubscribe

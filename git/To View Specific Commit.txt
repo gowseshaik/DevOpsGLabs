@@ -1,0 +1,6 @@
+To view specific commit as per commit id
+$ git show <commit_id>
+To view commit as per the last N occurrence of commit
+$ git show HEAD~N
+To view the content of the file in the respective commit
+$ git show HEAD~N: <filename>

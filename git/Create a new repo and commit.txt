@@ -1,0 +1,14 @@
+a. Create new repo in bitbucket
+b. Clone the new repo in ur local system using below command :-
+     git clone –b <branch name> < hyperlink>
+
+c. Go to the git repo in local
+     cd test
+
+d. Add all files in this path:-
+    git add –all
+
+e. git status
+Git commit –m “message”
+
+f. git push

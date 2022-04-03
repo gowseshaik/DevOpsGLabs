@@ -6,7 +6,12 @@ VGA capable of 1024×768 screen resolution
 Either a CD/DVD drive or a USB port for the installer media
 Internet access is helpful
 ===============
-
+to install vim tool inside docker container
+error: 
+bash: vi: command not found
+solution:
+apt-get update && apt-get install -y vim
+=====
 Install Docker on Ubuntu:
 
 	sudo su -
