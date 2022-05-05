@@ -1,0 +1,28 @@
+https://www.sonatype.com/thanks/repo-oss?submissionGuid=3de753c7-0189-42b9-bc80-e6ddf10f25b8
+download 
+
+Select your OS below to begin your download
+To access a direct download link, or upgrade to the latest version visit help.sonatype.com
+ 1. linux
+ 2. windows
+ 3. mac os
+ 
+unzip the downloaded file.
+and run the below command to startup the nexus.
+cd <nexus software dir>/nexus.exe /run
+
+http://localhost:8081/
+the default credentials will be 
+admin/admin123
+
+
+Nexus Commands
+./nexus run
+./nexus start
+./nexus stop
+./nexus restart
+./nexus force-reload
+./nexus status 
+
+curl -v -u ${bamboo.Nexus_ID}:${bamboo.Nexus_password} --upload-file  ${bamboo.build.working.directory}/REL_${service_name}_idev_$Date.$build.zip  http://nexus_host_ip:8081/repository/$service_name/IDEV/REL_${service_name}_idev_$Date.$build.zip
+

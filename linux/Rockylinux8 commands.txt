@@ -1,0 +1,225 @@
+=============$ To enable/disable sshd service on rockylinux(redhat/centos) $==================
+==============================================================================================
+sudo systemctl disable sshd --now
+sudo systemctl enable sshd --now
+
+to check the installed software on your host operating system
+rpm -qa | grep openssh-server
+Example output:
+openssh-server-8.0p1-10.el8.x86_64
+
+if not installed, install as follows
+sudo dnf install openssh-server
+
+Type Y, then press the ENTER KEY to proceed.
+
+Next, enable the servrice & verify the status of SSH using the following command.
+sudo systemctl enable sshd --now
+systemctl status sshd
+
+==========$ To install network tools and sshd_config on your host machine $==========
+=====================================================================
+bash: ifconfig: command not found
+
+Let us see which package provides us ifconfig command using the YUM command.
+yum whatprovides ifconfig
+
+[root@localhost vagrant]# yum whatprovides ifconfig
+Last metadata expiration check: 0:05:26 ago on Sat 30 Apr 2022 01:12:22 AM UTC.
+net-tools-2.0-0.52.20160912git.el8.x86_64 : Basic networking tools
+Repo        : baseos
+Matched from:
+Filename    : /usr/sbin/ifconfig
+
+
+From the above command, you can see that the net-tools package provides you ifconfig command. Now, install the net-tools package using the yum command.
+yum -y install net-tools
+
+Once the installation is complete, then run ifconfig to see whether it is available or not.
+
+error: when ssh vagrant machine session from mobaxterm, getting below error
+!!!
+No supported authentication methods available (server sent: publickey,gssapi-keyex,gssapi-with-mic)
+!!!
+solution:
+Windows - get PEM key from AWS website and generate PPK file using PuttyGen. Then use Putty to use the PPK (select it using left-column: Connection->SSH->Auth: Private key for authorization)
+Linux
+ - run: ssh -i your-ssh-key.pem login@IP-or-DNS</p">login@IP-or-DNS>
+ 
+solution:
+vi /etc/ssh/sshd_config
+In the sshd_config file it said "PasswordAuthentication no". Changing that to "PasswordAuthentication yes" and a restart of sshd solved it for me.
+and restart the sshd service.
+
+systemctl status sshd
+systemctl restart sshd
+
+
+==========$ Install nslookup for Centos: $==========
+==================================================
+[vagrant@DevopsRoles ~]$ sudo yum install bind-utils
+
+==========$ user and group management: $==========
+==================================================
+it will store in the following files
+/etc/passwd
+/etc/shadow (will be displayed by root)
+/etc/group
+/etc/gshadow
+/etc/login.defs (which contains an default options of an user)
+
+==========$To change the options for an existing user $==========
+=================================================================
+$ grep james /etc/passwd
+james:X:1002:1002:Golang developer:/home/james:/bin/bash
+
+$ sudo usermod -c "comments for the user" james
+$ sudo usermod -g daemon james
+$ groups james
+output: 
+$ james : daemon adm mail sudo
+
+$ sudo groupadd developers
+$ sudo groupadd managers
+$ sudo usermod -G developers,managers james
+$ groups james
+output: 
+$ james : daemon developers managers
+
+$ sudo usermod -aG sudo james
+output: 
+$ james : daemon sudo developers managers
+==========$To delete user $==========
+=====================================
+$ sudo userdel gouse
+$ grep gouse /etc/passwd
+but if you check in /home directory, still the user directory will be present. for this we have to use the option with -r
+$ sudo userdel -r gouse
+
+$userdel --> is for backend
+$deluser , $delgroup are the friendlier front end for userdel and groupdel
+
+==========$ default admin groups as per distributions: $==========
+==================================================================
+sudo on ubuntu
+wheel on CentOS
+when the user is part of this above groups as per distribution, the user can run the admin commands on respective distributions.
+==========$To create user with admin privileges $==========
+============================================================
+$ sudo useradd -m -s /bin/bash gouse
+[sudo] password for student:
+
+$grep gouse /etc/passwd
+$sudo passwd gouse
+new password:
+$ su gouse
+id
+to make the user as admin user
+$ sudo usermod -aG sudo gouse
+$ su gouse 
+and now you can run admin commands.
+==========$To create user $==========
+=====================================
+$ man useradd
+$ sudo useradd u1
+$ less /etc/default/useradd
+
+$ group u1
+u1 : u1
+less /etc/login.defs
+to create a home direcotry of your user, use the option -m and -d for other username for existing /home
+-m : to create a home directory
+-d : for other username for existing /home
+-c : cooments/description of an user
+-s : to define a default shell
+-g : to add group to this user
+-G : to add other groups to this user
+-e : to set the end of the date of user(expire policy)
+
+$ sudo useradd -m -d /home/james -c "DevOps Engineer" -s /bin/bash -G sudo,adm,mail james
+make sure to set the password for your created user:
+$ passwd james 
+ to set the end of the date for the user 
+$ sudo useradd -e 2022-06-22 <username>
+
+to set the expire policy for the user
+$ sudo chage -l james
+$ less /etc/passwd
+
+login attempts restiction
+/usr/bin/nologin : it will shows , user account not found.
+/bin/false : it will showes the binary error prompt
+these above info will be seen in /etc/passwd
+
+difference between in useradd V/s adduser
+useradd is recommended
+==========$Group Management $==========
+=======================================
+/etc/group
+$ sudo groupadd engineering
+$ sudo usermod -aG engineering u3
+To change the group name
+$ sudo groupmod -n engineerings engineers
+$ sudo groupdel engineers
+
+groups are two types:
+	1. the primary group: the "id" is stored in /etc/passwd and the "group name" in /etc/group
+	2. the secondary group: stored in /etc/group
+
+
+==========$scheduling a task with anacron $==========
+=====================================================
+anacron will start your task, even once system rebooted.
+
+==========$Service Management $==========
+=========================================
+services will be managed by systemd and systemctl
+
+to control the systemd system, we can use the systemctl command.
+means to manage systemd system we use systemctl
+we can manage our services with systemctl.
+$ apt upade && apt install nginx
+to know the nginx service status
+$ systemctl status nginx.service
+here .service suffix is by systemd, even we can run with our application service name without suffix.
+$ systemctl status nginx
+$ systemctl stop nginx
+$ systemctl start nginx
+$ systemctl reload nginx
+$ systemctl reload-or-restart nginx
+
+To start our nginx service at the boot time
+$ systemctl enable nginx
+
+To check our service is enabled at boot startup
+$ systemctl is-enabled nginx
+
+to disablenginx service
+$ systemctl disable nginx
+
+To enable the nginx not to start at boot time, it will make the service in inactive mode.
+$ systemctl mask nginx
+$ systemctl status nginx
+to make it available
+$ systemctl unmask nginx
+$ systemctl start nginx
+$ systemctl status nginx
+
+$ systemctl list-units
+$ systemctl list-units --all
+
+sudo dnf -y install chrony
+sudo systemctl enable chronyd
+
+To set the hostname as FQDN
+sudo hostnamectl set-hostname git.example.com
+
+To set the timezone
+sudo timedatectl list-timezones
+sudo timedatectl set-timezone America/New_York
+sudo timedatectl set-local-rtc 0
+sudo timedatectl set-ntp yes
+sudo chronyc sources
+Run the timedatectl command without options to check the current status of NTP synchronization.
+timedatectl
+

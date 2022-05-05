@@ -21,6 +21,8 @@ $ sudo vi /etc/gitlab/gitlab.rb
 Find external_url parameter and set IP address or hostname of your machine. Default port is 80, but you can explicitly set if needed.
 external_url 'http://192.168.0.188:9000'
 
+external_url 'http://192.168.87.134:9000'
+
 To make changes to take effect, reconfigure the GitLab:
 $ sudo gitlab-ctl reconfigure
 
@@ -40,6 +42,7 @@ Now open the browser and enter IP address or hostname to access the GitLab web i
 
 http://34.125.44.230:9000
 http://34.125.44.230:9000/users/sign_in
+
 
 ===================
 Install GitLab Runner on Ubuntu 20.04
@@ -96,3 +99,181 @@ Provide GitLab instance URL and registration token. In our case, we chosen ubunt
 
 For more info, Please refer: https://docs.gitlab.com/
 
+=============
+================
+=====================
+
+==========$gitlab installation on Rocky Linux 8$==========
+==========================================
+
+GitLab Community Edition (CE) – Free to use
+GitLab Enterprise Edition (EE) – Requires purchased license to use.
+
+https://computingforgeeks.com/how-to-install-gitlab-on-rocky-linux-8/
+https://www.howtoforge.com/how-to-install-gitlab-on-rocky-linux-8/
+
+Step 1: Update Rocky Linux System
+1. sudo dnf check-update
+2. sudo dnf update -y
+3. sudo dnf -y upgrade
+
+Once you have updated your system, you should install the required dependencies. Run the following command to install them.
+
+sudo dnf install -y curl openssh-server policycoreutils perl
+sudo systemctl enable --now sshd
+sudo dnf -y install postfix
+sudo systemctl enable --now postfix
+sudo dnf -y install chrony
+sudo systemctl enable chronyd
+
+Step 2: Set hostname, timezone and ntp server 
+1. sudo hostnamectl set-hostname git.example.com
+reffer link on DNS: https://datacadamia.com/os/linux/fqdn 
+vi /etc/hosts
+
+2. sudo timedatectl list-timezones
+Asia/Riyadh
+3. sudo timedatectl set-timezone Asia/Riyadh
+4. sudo timedatectl set-local-rtc 0
+5. sudo timedatectl set-ntp yes
+6. sudo chronyc sources
+Run the timedatectl command without options to check the current status of NTP synchronization.
+
+7. timedatectl
+You will see the status of your NTP synchronization as shown below.
+[root@master vagrant]# timedatectl
+               Local time: Tue 2022-05-03 14:11:00 +03
+           Universal time: Tue 2022-05-03 11:11:00 UTC
+                 RTC time: Tue 2022-05-03 11:11:01
+                Time zone: Asia/Riyadh (+03, +0300)
+System clock synchronized: yes
+              NTP service: active
+          RTC in local TZ: no
+
+
+step 3: Adding GitLab repository
+
+sudo tee /etc/yum.repos.d/gitlab_gitlab-ce.repo<<EOL
+[gitlab_gitlab-ce]
+name=gitlab_gitlab-ce
+baseurl=https://packages.gitlab.com/gitlab/gitlab-ce/el/8/\$basearch
+repo_gpgcheck=1
+gpgcheck=1
+enabled=1
+gpgkey=https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey
+ https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey/gitlab-gitlab-ce-3D645A26AB9FBD22.pub.gpg
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+metadata_expire=300
+EOL
+
+it should return as below:
+[gitlab_gitlab-ce]
+name=gitlab_gitlab-ce
+baseurl=https://packages.gitlab.com/gitlab/gitlab-ce/el/8/$basearch
+repo_gpgcheck=1
+gpgcheck=1
+enabled=1
+gpgkey=https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey
+ https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey/gitlab-gitlab-ce-3D645A26AB9FBD22.pub.gpg
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+metadata_expire=300
+
+step 4: Enable GitLab CE repository
+Now, run the command below to verify whether the GitLab repository has been added or not.
+$ sudo dnf repolist
+You will see the gitlab_gitlab-ce as repository as shown below.
+Next, run the following command to verify if the repository is enabled or not.
+$ sudo dnf repolist enabled
+$ sudo dnf repolist gitlab_gitlab-ce
+
+Do NOT proceed until you see the gitlab_gitlab-ce repository as enabled. Run the command below to set the repository as enabled.
+$ sudo dnf config-manager --set-enabled gitlab_gitlab-ce
+
+step 5: Installing GitLab on Rocky Linux 8.4
+Now it's time to install GitLab on your system. Run the following command to do so. Replace gitlab.example.com in the command with your FQDN https://datacadamia.com/os/linux/fqdn.
+
+sudo EXTERNAL_URL="http://gitlab.example.com" dnf install -y gitlab-ce
+
+[root@master vagrant]# hostname --fqdn
+git.example.com
+
+$ sudo EXTERNAL_URL="http://git.example.com" dnf install -y gitlab-ce
+$ sudo EXTERNAL_URL="http://gitlab.localdomain" yum install -y gitlab-ce
+
+for enterprise eddition
+$ sudo EXTERNAL_URL="http://gitlab.localdomain" yum install -y gitlab-ee
+
+The installation might take some time depending on your internet connection speed a the server-loads. 
+You will see the output as shown below after the command finished, don't close the terminal yet because there are still few things to do.
+
+step 6: Configuring Firewall Rules
+Now, it's time to configure the Firewall in Rocky Linux. If you run your server behind a firewall, you need to allow http and https traffic because we will use HTTP/HTTPS protocol to access the GitLab web UI. Run the following command to open HTTP and HTTPS ports on your firewall.
+
+rpm -qa firewalld
+# expected output: firewalld-0.6.3-2.el7_7.2.noarch
+
+# if not installed, install it
+yum install firewalld
+
+# check the status of the service (running and enabled)
+systemctl status firewalld
+
+# if the service is not running, start it
+systemctl start firewalld
+
+# if the service has exited, restart it(check for error if any)
+systemctl restart firewalld
+
+# if the service is not enabled, enable it
+systemctl enable firewalld
+
+$ sudo firewall-cmd --permanent --add-service=ssh
+$ sudo firewall-cmd --permanent --add-service=http
+$ sudo firewall-cmd --permanent --add-service=https
+Run the command below to apply new firewall rules.
+
+$ sudo systemctl reload firewalld
+
+sudo cat /etc/gitlab/initial_root_password
+reset the password
+
+/etc/hosts
+
+==========$Check Gitlab Status via Command Line $==========
+==========================================
+
+
+So, the command to view the current status of Gitlab’s service is shown below :
+
+$ gitlab-ctl status
+$ sudo systemctl --all | grep gitlab
+$ sudo systemctl status gitlab-runsvdir.service
+
+==========$ To change the port for your gitlab $==========
+===========================================================
+refer: https://serverfault.com/questions/585528/set-gitlab-external-web-port-number
+
+Chad Carbert answer still applies but just want to add extra for version 7.0.0.
+
+Open "/etc/gitlab/gitlab.rb" in your text editor where currently I have external_url http://127.0.0.1/ or similar to that. 
+I may need to change external_url with dns including port number (eg. 'http://gitlab.com.local:81/') then reconfigure using command "sudo gitlab-ctl reconfigure" Gitlab is now working on port 81.
+
+Step by step:
+
+sudo -e /etc/gitlab/gitlab.rb
+Change external_url from yourdomain.com to yourdomain.com:9999
+9999 -> Port you want it to run
+
+git the IP of your hostname, and update the /etc/gitlab/gitlab.rb
+$ vi /etc/gitlab/gitlab.rb
+external_url 'http://192.168.87.134:9000'
+
+$ sudo gitlab-ctl reconfigure
+
+$ sudo gitlab-ctl stop
+$ sudo gitlab-ctl start
+
+http://192.168.87.134:9000
+http://192.168.87.134:9000/users/sign_in

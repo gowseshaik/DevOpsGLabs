@@ -1,0 +1,3 @@
+Pipelines for Bitbucket are available on cloud only.
+
+If you use Server/DC, you need Bamboo as Buildserver.
