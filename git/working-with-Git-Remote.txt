@@ -71,5 +71,10 @@ Scenario 5: copy a public repository on github into your account on github ( sim
 	Note: all the chagnes you push will be pushed to the project under you account, but not to the project from where you copied, if you want update/merge your chages into the original project you need to create a pull request & the original owner of the project will review & accept if they are ok. 
 	
 	
-	
-	
+Scenario 6: To get the last commited files:
+
+gowse@DESKTOP-6LCK2HQ MINGW64 ~/Desktop/baf_common (release/SITDevOps)
+$ git log -n 1 --pretty=format:"%H"
+14b2c5ab55f35bce24a4f864bc64ca704882339d
+
+

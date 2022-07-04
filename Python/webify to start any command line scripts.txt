@@ -1,0 +1,12 @@
+https://github.com/beefsack/webify
+
+# Make a web service out of `wc` to count the characters in the request body.
+$ webify wc -c
+2020/08/25 12:42:32 listening on :8080, proxying to wc -c
+
+...
+
+$ curl -d 'This is a really long sentence' http://localhost:8080
+30
+
+software : https://github.com/beefsack/webify/releases

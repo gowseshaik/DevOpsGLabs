@@ -16,7 +16,10 @@ $ git fetch
 
 From git repository
    xyz88874..def74125  master -> origin/master
-So how would we merge the above commit from the local branch to the master branch? We have two solutions now, the first is using the merge commands, and the other is the rebase commands in Git.
+So how would we merge the above commit from the local branch to the master branch? 
+We have two solutions now, 
+	- the first is using the merge commands, 
+	- and the other is the rebase commands in Git.
 
 Update Master Branch Using the merge Command in Git
 As we have the situation where we want to merge the latest commit from the local branch to the master branch, we can use the below command to merge the commits.

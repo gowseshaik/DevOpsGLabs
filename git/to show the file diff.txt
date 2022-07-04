@@ -1,0 +1,22 @@
+gowse@DESKTOP-6LCK2HQ MINGW64 ~/Desktop/siebel sif changes (master)
+$ git show "EEMBL Account Light IO.sif"
+commit 5cebfee79f25fa433ca3996c5bf240b5c8130d84 (HEAD -> master)
+Author: Gouse Shaik <g.shaik@mobily.com.sa>
+Date:   Sun May 8 16:35:01 2022 +0300
+
+    second commit
+
+diff --git a/EEMBL Account Light IO.sif b/EEMBL Account Light IO.sif
+index 566631f..40312d3 100644
+--- a/EEMBL Account Light IO.sif
++++ b/EEMBL Account Light IO.sif
+@@ -52,7 +52,7 @@
+                                   EXTERNAL_REQUIRED="N"
+                                   EXTERNAL_SEQUENCE="12"
+                                   FIELD_TYPE="Data"
+-                                  INACTIVE="Y"
++                                  INACTIVE="N"
+                                   NAME="52 Week High"
+                                   PHYSICAL_DATA_TYPE="DTYPE_CURRENCY"
+                                   REQUIRED="N"
+

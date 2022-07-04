@@ -14,3 +14,13 @@ https://cobertura.github.io/cobertura/
 
 https://confluence.atlassian.com/display/BAMEXT/Coverage+Plugin
 https://confluence.atlassian.com/display/BAMEXT/Cobertura+plugin
+
+
+setenv http_proxy=http://proxy.prod.mobily.lan:8080
+setenv ftp_proxy=http://proxy.prod.mobily.lan:8080
+setenv https_proxy=http://proxy.prod.mobily.lan:8080
+export http_proxy ftp_proxy https_proxy
+export no_proxy=.prod.mobily.lan
+
+
+

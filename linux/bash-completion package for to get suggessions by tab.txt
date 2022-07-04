@@ -1,0 +1,5 @@
+[root@master vagrant]# yum install bash-completion -y
+[root@master vagrant]# exec bash
+[root@master vagrant]# ls
+ls        lsattr    lsblk     lscpu     lsgpio    lshw      lsiio     lsinitrd  lsipc     lslocks   lslogins  lsmem     lsmod     lsns      lspci     lsscsi
+[root@master vagrant]#

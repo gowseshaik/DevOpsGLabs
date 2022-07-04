@@ -1,0 +1,49 @@
+16 Reasons to move to Jira Data Center
+
+	High Availability & Performance at Scale:
+=============================================
+	Clustering: Run Jira Software on multiple nodes for high availability
+	Stale node configuration: configure how fast stale nodes in your cluster are moved offline
+	Content Delivery Network (CDN): Improve geo-performance for distributed teams
+
+	Infrastructure & Control:
+=============================
+	Zero-downtime Upgrades: Provide uninterrupted access for end-users while upgrading
+	Archive Projects & Issues: Archive projects and issues once they're no longer needed
+	Custom field optimizer: Scan and manage custom fields easily to optimize your Jira Software instance's performance
+	Custom field indexing times: To manage custom fields better, you can check which ones are taking longest to index
+	Cluster monitoring: Monitor the status of each node in your cluster
+	Rate limiting: Control how many external REST API requests users and automations can make and how often they can make them, making sure that your Jira instance remains stable 
+	Advanced Auditing: Get more insight into what is happening in your Jira instance
+
+	User Management & Security:
+===============================
+	Just-in-time user provisioning (JIT provisioning): allows users to be created and updated automatically when they log in through SAML SSO or OpenID Connect (OIDC) SSO to Atlassian Data Center applications
+	SAML Single Sign On SSO: Use a SAML identity provider for authentication and single-sign on. 
+
+	Deployment Options:
+=======================
+	Your own hardware: Run Jira applications on your own physical servers, virtualized servers, or in the data center of your choice.
+	AWS: Cloud Formation Templates to deploy Jira applications on AWS
+	Azure: Templates to deploy Jira applications on Azure
+
+	Built for Enterprise:
+=========================
+	Edition built bottom-up for enterprise environments
+
+
+	Atlassian announced in 2020 :
+==================================
+
+•	February 2, 2021, end of sale for new main server licenses  
+
+•	February 2, 2022: no longer upgrade or downgrade for server products or apps  
+
+•	February 2, 2023: no longer purchase for new apps for your existing server licenses  
+
+•	February 2, 2024: end of support for all server licenses  
+
+
+Azure integration :
+===================
+Sure , Atlassian product can be integrated with Azure , you can find many apps on Atlassian marketplace does this feature 

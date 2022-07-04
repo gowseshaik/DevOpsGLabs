@@ -1,0 +1,23 @@
+packervmc
+
+https://blogs.vmware.com/cloud/2019/11/12/infrastructure-code-hashicorp-packer-vmware-vmware-cloud-aws/
+
+git clone https://github.com/nvibert/packervmc.git
+
+Template of a working Packer template with VMware Cloud on AWS.
+
+Template of a working Packer template with VMware Cloud on AWS.
+Instructions
+
+    Download Packer for your platform
+    Download Jetbrains
+    Download the ISO you want to build the VM from and upload to WorkloadDatastore/ISO (create an ISO folder in the WorkloadDatastore). If you want to follow my example, download the Ubuntu ISO.
+    Download ubuntu-18.04-working template.json and preseed.cfg
+    Update the JSON file above with the right credentials and other settings, such as Network segment you want the VM to be attached.
+    Run the following command:
+
+packer build ubuntu-18.04-working template.json
+
+Watch the VM getting built !
+
+

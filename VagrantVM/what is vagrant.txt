@@ -1,0 +1,2 @@
+What is Vagrant?
+Vagrant provides the framework and configuration format to create and manage complete portable development environments. These development environments can live on your computer or in the cloud, and are portable between Windows, Mac OS X, and Linux.

@@ -1,0 +1,54 @@
+https://www.geeksforgeeks.org/git-cherry-pick/
+You can use
+
+git cherry-pick <commit id>
+
+to pick specific commits
+
+To close the cycle and make a PR from master. We can do the following steps:
+
+Assume being on the master branch:
+
+git checkout -b myNewBranch // this will create a new branch named myNewBranch
+git cherry-pick <commitID 1> // this will take the commit with the commit ID 1 and 
+                             // attempt to place it on top of the master branch. 
+                             // Note however, there might be conflicts to resolve
+git cherry-pick <commitID 2> // this will take the commit with the commit ID 2 and place on top of the master branch
+git push origin/<some branch name> // will push the changes to remote. Usually origin/<local branch name>
+Then you can make a pull request depending on your platform. So it can be from the GUI. Be it on a GitHub platform or DevAzure, etc. In your case via BitBucket GUI.
+
+Side note: the steps above are made for simplicity. It is also possible to make the cherry-pick with one line. Like so:
+
+git cherry-pick <commitID 1> <commitID 2>
+
+
+==========
+Cherry picking is not supported in the UI but it is easy to accomplish on the command line or using a tool like SourceTree.
+
+You could do something roughly like this:
+
+git checkout DEV
+git log
+
+# copy the commit hash
+
+git checkout SIT
+git cherry-pick <commit_hash_from_DEV>
+
+# now that commit from DEV is in SIT (assuming there are no conflicts)
+Here is some additional documentation: https://www.atlassian.com/git/tutorials/cherry-pick
+=======================
+
+Fork original-repo as "your-repo"
+
+git clone your-repo
+cd your-repo
+git checkout dev
+git pull //to get all your commits to local
+git checkout master
+git pull //to make sure branch is upto date
+git cherry-pick commit-id
+git push //commits the cherry-picked commits to the master branch of forked repo
+
+Raise PR from Forked repo "your-repo" master branch to "original-repo" master branch
+

@@ -95,3 +95,18 @@ Branch 'SIT2' set up to track remote branch 'SIT2' from 'origin'.
 
 =================> goto remote bitbucket repo and check the branch updated or not <===================
 http://197.164.182.232:7990/scm/bmscod/mbi_2.0
+
+
+<dependency>
+  <groupId>com.mobily.sf.apollo</groupId>
+  <artifactId>ComptelMapper-Request</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+</dependency>
+
+
+expecting value: on server for the deployment
+
+ComptelMapper-Request-0.0.1-SNAPSHOT.jar
+
+ComptelMapper-Request-0.0.1-20220512.124136-8.jar
+

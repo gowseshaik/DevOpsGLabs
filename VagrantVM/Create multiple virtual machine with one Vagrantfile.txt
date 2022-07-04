@@ -1,0 +1,128 @@
+Create multiple virtual machine with one Vagrantfile
+
+June 7, 2020 by Sharad Chhetri Leave a Comment
+
+For doing POC and testing sometimes we need multiple Virtual Machines very quickly. So here in this post we will create multiple virtual machine with one Vagrantfile by using Vagrant. We will cover some examples from coding side in Vagrantfile, it will help you in your real time scenarios as well.
+
+As we know Vagrant is written in Ruby language, so we will use some Ruby code in Vagrantfile.
+We use the Multi VMs for various technology POC like system Cluster,High Availability, automation tool (like chef,puupet and ansible) etc. etc.
+
+Example 1: With basic Vagrantfile
+Example 2: Using loop in Vagrantfile
+Example 2: Nested loop-conditional statement in Vagrantfile
+
+Syntax:
+Block_Name.vm.define : To define the new VM, use this code. You will see more examples and will understand how to define this.
+
++++++++++++++++++++++++++++++++++++++++++++
+1. Create Multi VM With basic Vagrantfile
++++++++++++++++++++++++++++++++++++++++++++
+In this scenario,we will create three VM from single Vagrantfile. We will create VMs for Web Server, MySQL Server and FTP server. It will just create the 3 Virtual Machines with different Operating System.
+
+mkdir -p ~/vagrant_box/example1 && cd ~/vagrant_box/example1 
+
+# create file
+vi Vagrantfile
+
+#paste the given below content in Vagrantfile
+Vagrant.configure("2") do |config|
+  #config.vm.box = "base"
+
+  config.vm.define "web" do |web|
+    web.vm.provider "virtualbox" do |vb_web|
+      vb_web.memory = 1024
+      vb_web.cpus = 2
+    end
+
+    web.vm.box = "centos/8"
+    web.vm.hostname = "web01"
+    web.vm.network "private_network", ip: "192.168.33.10"
+
+  end
+
+  config.vm.define "mysql" do |mysql|
+    mysql.vm.box = "debian/buster64"
+    mysql.vm.hostname = "mysql01"
+    mysql.vm.network "private_network", ip: "192.168.33.11"
+
+  end
+
+  config.vm.define "ftp" do |ftp|
+    ftp.vm.box = "freebsd/FreeBSD-12.1-STABLE"
+    ftp.vm.hostname = "ftp01"
+    ftp.vm.network "private_network", ip: "192.168.33.12"
+  end
+
+end
+
+# now create multi VM
+vagrant up
+
++++++++++++++++++++++++++++++++++++++++++++
+2. Create Multi VM using loop in Vagrantfile
++++++++++++++++++++++++++++++++++++++++++++
+==========================================
+Here, also we will create 3 Virtual Machines. We have defined the array vm_name and then used the ruby loop to create all these 3 Virtual Machines. One thing to notice that all these VMs will have same Operating System.
+
+mkdir -p ~/vagrant_box/example2 && cd ~/vagrant_box/example2 
+
+# create file
+vi Vagrantfile
+
+Vagrant.configure("2") do |config|
+  vm_name=['web01','mysql01','ftp01']
+  vm_name.each do |i|
+      config.vm.define "#{i}" do |node|
+      node.vm.box = "centos/8"
+    end
+  end
+end
+
+# now create multi VM
+vagrant up
+
+This is another example of loop but here the VM name will be like node-1, node-2 and node-3 .
+
+mkdir -p ~/vagrant_box/example3 && cd ~/vagrant_box/example3 
+
+# create file
+vi Vagrantfile
+
+(1..3).each do |i|
+  config.vm.define "node-#{i}" do |node|
+    node.vm.box = "centos/8"
+  end
+end
+
+# now create multi VM
+vagrant up
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+3. Create Multi VM using nested loop and conditional statement in Vagrantfile
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Because we can use ruby code in Vagrant, we add some Nested loop and condition in this example.
+Here, if vm_name is ftp01 OR web01 it will create Virtual Machine with CentOS 8 operating system else create Virtual Machine with CentOS 7 Operating System.
+
+mkdir -p ~/vagrant_box/example4 && cd ~/vagrant_box/example4 
+
+# create file
+vi Vagrantfile
+
+Vagrant.configure("2") do |config|
+  vm_name=['web01','mysql01','ftp01']
+  vm_name.each do |i|
+    if "#{i}" == 'ftp01' OR "#{i}" == 'web01' then
+      config.vm.define "#{i}" do |node|
+        node.vm.box = "centos/8"
+      end
+    else
+      config.vm.define "#{i}" do |node|
+        node.vm.box = "centos/7"
+      end
+    end
+  end
+end
+
+# now create multi VM
+vagrant up

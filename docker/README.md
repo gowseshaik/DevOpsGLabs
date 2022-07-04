@@ -108,3 +108,75 @@ ass.
 > Docker Engine combines the namespaces, control groups, and UnionFS into a wrapper called a container format. 
 
 > The default container format is libcontainer. In the future, Docker may support other container formats by integrating with technologies such as BSD Jails or Solaris Zones.
+
+
+
+### `Most used Docker commands`
+docker images
+docker image ls
+docker image build -t imagename:version -f /path/filename
+docker rmi imagename
+docker history imagename
+docker df images
+docker push imagename
+docker pull imagename
+docker tag imagename newinagename
+docker save image image.tar
+docker load image.tar image
+docker commit containerid imagename
+docker search imagename
+docker system prune -a
+docker ps
+docker ps -a
+docker rm containerid
+docker rm --force containerid
+docker rm $(docker ps -aq)
+docker rmi $(docker ps -aq)
+docker rm --force $(docker ps -aq)
+docker top containerid
+docker df containerid
+docker run image:version
+docker run name image:version
+docker stop containerid
+docker start containerid
+docker restart containerid
+docker stop $(docker ps -aq)
+docker sart $(docker ps -aq)
+docker restart $(docker ps -aq)
+docker run -t 10 imagename
+docker port containerid
+docker run -d imagename
+docker attach containerid
+CTL+p+q
+docker run -d imagename cat /etc/release
+docker run -it -d imagename
+docker run --rm -d imagename
+docker run -d --restart=never imagename.
+docker exec containerid cat /etc/releases
+docker exec -it containerid /bin/bash
+docker import containerid imagename
+docker export containerid imagename
+docker run -d --restart=On failure -e myid=xyz imagename
+docker run -d -p 8080:80 imagename
+docker run -d -P imagename
+docker run -v /path/localpath/dir: /path/containerpath/ imagename
+docker run --volumefrom A:B imagename
+docker run -d --links a:b imagename
+docker network create --driver bridge --subnet xxx.xxx.xx --gateway xxxxxx network name
+docker-compose up
+docker-compose down
+docker-compose up -d
+docker-compose restart/stop/start
+docker swarm init
+docker swarm join-token worker
+docker swarm join-token manager
+docker node ls
+docker service create --name servicename -p8080:80 --restart=always --replicas 6 imagename
+docker service psservicename
+docker service scale service name=8
+docker node update --availability drain workername
+docker node update --availability active workername
+docker swarm leave
+docker rm service name
+docker service update --image imagename:vr servicename
+docker service update --rollback myservice

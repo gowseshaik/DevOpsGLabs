@@ -1,0 +1,23 @@
+-from master in working branch
+>> git branch [new branch] [tag]
+>> git checkout [branch]
+-pull commit out and add it to the commit at the top of the tag
+>> git cherry-pick [commit] or git cherry-pick [firstcommit]^..[lastcommit] if you have a range
+-resolve conflicts
+-delete the local tag
+>> git git tag -d [tag]
+-add a new tag at the head of the old one
+>> git tag [tag]
+-delete the remote tag
+>> git push origin :[tag]
+-push new tag and commits
+>> git push origin [tag]
+
+ex.
+git branch a release_a
+git checkout a
+git cherry-pick 899a25202dbf8bdb58fc73ae836f50660ec0b23b
+git tag -d release_a
+git tag release_a
+git push origin :release_a
+git push origin release_a

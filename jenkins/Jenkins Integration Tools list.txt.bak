@@ -1,7 +1,13 @@
+codereview:
+===========
+
 PMD for codereview
 https://confluence.atlassian.com/display/BAMEXT/PMD+plugin
 maven -P metrics pmd:pmd
 
+
+code coverage:
+==============
 Cobertura 2.1.1
 Cobertura is a free Java tool that calculates the percentage of code accessed by tests. It can be used to identify which parts of your Java program are lacking test coverage. It is based on jcoverage.
 https://cobertura.github.io/cobertura/
