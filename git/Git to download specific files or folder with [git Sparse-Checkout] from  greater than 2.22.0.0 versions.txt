@@ -1,0 +1,12 @@
+Git to download specific files or folder with [git Sparse-Checkout] from  greater than 2.22.0.0 versions
+git sparse-checkout will work from > 2.22 versions
+
+How to use Git Sparse-Checkout command 
+# git init
+# git remote add -f origin [GIT URL]
+# git config core.sparseCheckout true
+# git sparse-checkout set [folder required]
+# git pull from origin [branch name] // just for one time
+# ex: git pull origin final
+then you can explore other commands of sparse checkout 
+list | add | set | disable | reapply 

@@ -1,0 +1,15 @@
+to get the changes of files with commit sha value:
+$ git show --name-only <commit sha value>
+
+to get the changes with dynamic no as a recent(starts from 1)
+$ git show --name-only -n 1
+$ git show --name-only -n 2
+$ git show --name-only -n 3
+
+
+$ git show --pretty="format:" --name-only -n 1
+Test2/.gitignore
+Test2/Global_DB.properties
+Test2/Global_JavaConfig.properties
+Test2/Global_MQ.properties
+Test2/Global_Pass_Keys.properties
