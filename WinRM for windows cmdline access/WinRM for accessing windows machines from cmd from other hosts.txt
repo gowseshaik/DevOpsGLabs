@@ -1,0 +1,29 @@
+How To Enable WinRM On Windows Machines
+=======================================
+WinRM
+Before we get into the technical bits, let’s understand what is WinRM. WinRM is a remote management platform that is built into Windows operating systems and based on .NET and PowerShell.
+
+By default, WinRM is enabled on Windows Server but not on Windows 10 machines which means that you need to enable it as you will see soon how.
+
+Why Do you need WinRM
+WinRM can help us, manage Windows-based machines using remote PowerShell cmdlet without RDP or login into the remote machine. 
+This method allows Administrators to manage multiple machines using scripts and cmdlet.
+
+Enable WinRM
+To enable WinRM on a Windows 10 machine, Open PowerShell and run the following cmdlet.
+
+Enable-PSRemoting -force 
+It is important to note that you are not in an Active Directory-based environment 
+and you Windows 10 machine is not domain joined you will need to add the machine you are going to connect from to the trusted host of the Windows 10 machine. 
+please visit this blog post on how to add a machine to the trusted host list.
+
+
+Enable WinRM using Group Policy:
+===============================
+The above option is great if you have a single Windows 10 machine that needs WinRM enabled but what if you have 50 Windows 10 machines in a domain-joined environment? you will need to use a Group Policy. To use a GPO, create a new one or edit existing one and modify the following settings and set WInRM to Enabled.
+
+Open Group policy GUI:
+======================
+Computer Configuration > Policies > Administrative Templates > Windows Components > Windows Remote Management (WinRM) > WinRM Service > Allow remote server management through WinRM 
+
+Don’t forget to apply the GPO to the OU that has all your Windows 10 machines. Once applied in 30 minutes all your hosts will get the policy. In this case, there is no need to modify the trusted hosts’ list.

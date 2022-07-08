@@ -1,0 +1,46 @@
+How To Create A Vagrant Base Box
+https://scotch.io/tutorials/how-to-create-a-vagrant-base-box-from-an-existing-one
+
+https://www.vagrantup.com/docs/virtualbox/boxes.html
+
+This tutorial will create a base box using Ubuntu 16.04
+
+1. First, initialize vagrant, ssh into the box and install whatever you want on it.
+
+While still in ssh…
+
+You can also use this tutorial and script to initialize and install a lemp stack:
+How To Provision A LEMP Stack in Vagrant
+
+2. Make the box as small as possible
+
+$ sudo apt-get clean
+3. Then, “zero out” the drive
+
+Not sure what this does
+
+$ sudo dd if=/dev/zero of=/EMPTY bs=1M
+$ sudo rm -f /EMPTY
+4. Clear the Bash History and exit the VM
+
+$ cat /dev/null > ~/.bash_history && history -c && exit
+Now continue from the vagrant command line
+5. Repackage the server we just created into a new vagrant base box
+
+where ‘mynew.box' is any name you choose while adding .box at the end
+
+$ vagrant package --output mynew.box
+6. Add this new Vagrant Box into Vagrant
+
+where ‘mynewbox' is any name you choose (preferrably similar to the name of the box you just added) and ‘mynew.box' is the file name of the box you just created
+
+$ vagrant box add mynewbox mynew.box
+This now will “download” the box into your Vagrant installation allowing you to initiate this from any folder.
+
+To view the list of vagrant boxes:
+
+$ vagrant box list
+To remove a vagrant box:
+https://www.vagrantup.com/docs/cli/box.html
+
+$ vagrant box remove NAME
